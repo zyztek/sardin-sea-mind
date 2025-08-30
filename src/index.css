@@ -2,6 +2,131 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    /* Maritime Color Palette */
+    --maritime-deep: 210 85% 15%;
+    --maritime-primary: 215 85% 25%;
+    --maritime-secondary: 220 75% 35%;
+    --maritime-accent: 195 85% 45%;
+    --maritime-light: 200 60% 85%;
+    --maritime-foam: 180 30% 95%;
+    
+    /* Ocean Depths */
+    --ocean-abyss: 220 90% 8%;
+    --ocean-deep: 215 80% 18%;
+    --ocean-mid: 210 70% 28%;
+    --ocean-surface: 205 60% 48%;
+    
+    /* AI Signals */
+    --ai-neural: 275 80% 55%;
+    --ai-data: 160 75% 45%;
+    --ai-prediction: 45 85% 55%;
+    --ai-alert: 15 85% 55%;
+    
+    /* System Colors */
+    --background: var(--maritime-foam);
+    --foreground: var(--ocean-abyss);
+    --card: 0 0% 100%;
+    --card-foreground: var(--ocean-deep);
+    --popover: 0 0% 100%;
+    --popover-foreground: var(--ocean-deep);
+    --primary: var(--maritime-primary);
+    --primary-foreground: 0 0% 98%;
+    --secondary: var(--maritime-light);
+    --secondary-foreground: var(--ocean-deep);
+    --muted: 210 40% 92%;
+    --muted-foreground: 215 25% 45%;
+    --accent: var(--maritime-accent);
+    --accent-foreground: 0 0% 98%;
+    --destructive: var(--ai-alert);
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 85%;
+    --input: 214 32% 85%;
+    --ring: var(--maritime-primary);
+    --radius: 0.75rem;
+    
+    /* Maritime Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(var(--ocean-deep)), hsl(var(--ocean-surface)));
+    --gradient-horizon: linear-gradient(180deg, hsl(var(--maritime-light)), hsl(var(--maritime-foam)));
+    --gradient-ai: linear-gradient(135deg, hsl(var(--ai-neural)), hsl(var(--ai-data)));
+    
+    /* Shadows */
+    --shadow-depth: 0 8px 32px -8px hsl(var(--ocean-deep) / 0.3);
+    --shadow-surface: 0 4px 16px -4px hsl(var(--maritime-primary) / 0.2);
+    --shadow-ai: 0 0 24px hsl(var(--ai-neural) / 0.4);
+  }
+
+  .dark {
+    --background: var(--ocean-abyss);
+    --foreground: var(--maritime-foam);
+    --card: var(--ocean-deep);
+    --card-foreground: var(--maritime-light);
+    --popover: var(--ocean-deep);
+    --popover-foreground: var(--maritime-light);
+    --primary: var(--maritime-accent);
+    --primary-foreground: var(--ocean-abyss);
+    --secondary: var(--ocean-mid);
+    --secondary-foreground: var(--maritime-light);
+    --muted: var(--ocean-deep);
+    --muted-foreground: 215 25% 65%;
+    --accent: var(--ai-neural);
+    --accent-foreground: var(--ocean-abyss);
+    --destructive: var(--ai-alert);
+    --destructive-foreground: 0 0% 98%;
+    --border: var(--ocean-mid);
+    --input: var(--ocean-mid);
+    --ring: var(--maritime-accent);
+  }
+}
+
+@layer components {
+  .maritime-panel {
+    @apply bg-gradient-to-br from-card to-card/80 backdrop-blur-sm border border-border/50 rounded-lg shadow-lg;
+  }
+  
+  .ocean-gradient {
+    background: var(--gradient-ocean);
+  }
+  
+  .ai-pulse {
+    animation: ai-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .depth-shadow {
+    box-shadow: var(--shadow-depth);
+  }
+}
+
+@layer utilities {
+  .text-maritime-primary {
+    color: hsl(var(--maritime-primary));
+  }
+  
+  .text-ai-neural {
+    color: hsl(var(--ai-neural));
+  }
+  
+  .bg-ocean-gradient {
+    background: var(--gradient-ocean);
+  }
+  
+  .bg-ai-gradient {
+    background: var(--gradient-ai);
+  }
+}
+
+@keyframes ai-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
