@@ -4,7 +4,9 @@ import { AIInsightCard } from "@/components/dashboard/AIInsightCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { SystemMonitor } from "@/components/dashboard/SystemMonitor";
 import { FishingInsights } from "@/components/dashboard/FishingInsights";
+import { WeatherWidget } from "@/components/dashboard/WeatherWidget";
 import { MaritimeMap } from "@/components/navigation/MaritimeMap";
+import { NavigationControls } from "@/components/navigation/NavigationControls";
 import { 
   Thermometer, 
   Waves, 
@@ -152,10 +154,13 @@ const Index = () => {
             
             <AlertsPanel />
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <SystemMonitor />
               <FishingInsights />
+              <WeatherWidget />
             </div>
+            
+            <NavigationControls />
           </div>
         </div>
       </main>
