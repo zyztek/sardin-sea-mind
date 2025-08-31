@@ -2,6 +2,8 @@ import { MaritimeHeader } from "@/components/layout/MaritimeHeader";
 import { MetricsGrid } from "@/components/dashboard/MetricsGrid";
 import { AIInsightCard } from "@/components/dashboard/AIInsightCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
+import { SystemMonitor } from "@/components/dashboard/SystemMonitor";
+import { FishingInsights } from "@/components/dashboard/FishingInsights";
 import { MaritimeMap } from "@/components/navigation/MaritimeMap";
 import { 
   Thermometer, 
@@ -149,6 +151,11 @@ const Index = () => {
             />
             
             <AlertsPanel />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <SystemMonitor />
+              <FishingInsights />
+            </div>
           </div>
         </div>
       </main>
