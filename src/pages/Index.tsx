@@ -1,6 +1,7 @@
 import { MaritimeHeader } from "@/components/layout/MaritimeHeader";
-import { StatusCard } from "@/components/dashboard/StatusCard";
+import { MetricsGrid } from "@/components/dashboard/MetricsGrid";
 import { AIInsightCard } from "@/components/dashboard/AIInsightCard";
+import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { MaritimeMap } from "@/components/navigation/MaritimeMap";
 import { 
   Thermometer, 
@@ -92,75 +93,13 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Status Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatusCard
-            title="Temperatura del Agua"
-            value={18.5}
-            unit="°C"
-            status="optimal"
-            icon={Thermometer}
-            trend={{ value: 2.1, label: "vs ayer" }}
-          />
-          <StatusCard
-            title="Estado del Mar"
-            value={2.1}
-            unit="m"
-            status="normal"
-            icon={Waves}
-            trend={{ value: -0.3, label: "últimas 6h" }}
-          />
-          <StatusCard
-            title="Combustible"
-            value={78}
-            unit="%"
-            status="normal"
-            icon={Fuel}
-            trend={{ value: -12, label: "desde salida" }}
-          />
-          <StatusCard
-            title="Rumbo"
-            value={45}
-            unit="°"
-            status="normal"
-            icon={Compass}
-          />
-        </div>
+        {/* Metrics Grid */}
+        <MetricsGrid className="mb-8" />
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Map Section */}
-          <div className="lg:col-span-2">
-            <MaritimeMap
-              waypoints={mockWaypoints}
-              currentPosition={{ lat: 42.3601, lng: -71.0589 }}
-              onWaypointSelect={(waypoint) => console.log('Selected:', waypoint)}
-              onLayerToggle={(layerId) => console.log('Toggled layer:', layerId)}
-            />
-            
-            {/* Additional Status Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-              <StatusCard
-                title="Batería Sistemas"
-                value={95}
-                unit="%"
-                status="optimal"
-                icon={Battery}
-                trend={{ value: -2, label: "últimas 2h" }}
-              />
-              <StatusCard
-                title="Peces Detectados"
-                value={1247}
-                unit="individuos"
-                status="optimal"
-                icon={Fish}
-                trend={{ value: 23, label: "vs promedio" }}
-              />
-            </div>
-          </div>
-
-          {/* AI Insights Sidebar */}
-          <div className="space-y-6">
+          {/* Left Column - AI Insights */}
+          <div className="lg:col-span-1 space-y-6">
             <div>
               <h2 className="text-xl font-semibold mb-4 flex items-center">
                 <TrendingUp className="h-5 w-5 mr-2 text-ai-neural" />
@@ -198,6 +137,18 @@ const Index = () => {
                 </button>
               </div>
             </div>
+          </div>
+
+          {/* Right Column - Map and Alerts */}
+          <div className="lg:col-span-2 space-y-6">
+            <MaritimeMap
+              waypoints={mockWaypoints}
+              currentPosition={{ lat: 42.3601, lng: -71.0589 }}
+              onWaypointSelect={(waypoint) => console.log('Selected:', waypoint)}
+              onLayerToggle={(layerId) => console.log('Toggled layer:', layerId)}
+            />
+            
+            <AlertsPanel />
           </div>
         </div>
       </main>
