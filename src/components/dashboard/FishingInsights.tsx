@@ -126,9 +126,12 @@ export function FishingInsights({ className = "" }: FishingInsightsProps) {
                 <div className="font-bold text-foreground">€{data.price}/kg</div>
               </div>
               
-              <div className="text-center">
+               <div className="text-center">
                 <div className="flex items-center justify-center space-x-1 mb-1">
-                  {getTrendIcon(data.trend)({ className: "h-3 w-3 text-muted-foreground" })}
+                  {(() => {
+                    const TrendIcon = getTrendIcon(data.trend);
+                    return <TrendIcon className="h-3 w-3 text-muted-foreground" />;
+                  })()}
                   <span className="text-xs text-muted-foreground">Tendencia</span>
                 </div>
                 <div className={`font-bold ${getTrendColor(data.trend)}`}>
