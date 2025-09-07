@@ -12,6 +12,10 @@ import { WeatherWidget } from "@/components/dashboard/WeatherWidget";
 import { AdvancedMetrics } from "@/components/dashboard/AdvancedMetrics";
 import { RealTimeData } from "@/components/dashboard/RealTimeData";
 import { MaritimeSettings } from "@/components/dashboard/MaritimeSettings";
+import { ReportsSystem } from "@/components/dashboard/ReportsSystem";
+import { PerformanceMonitor } from "@/components/dashboard/PerformanceMonitor";
+import { SystemTests } from "@/components/testing/SystemTests";
+import { DataExporter } from "@/components/dashboard/DataExporter";
 import { MaritimeMap } from "@/components/navigation/MaritimeMap";
 import { NavigationControls } from "@/components/navigation/NavigationControls";
 import { Button } from "@/components/ui/button";
@@ -23,7 +27,9 @@ import {
   BarChart3,
   Activity,
   Settings,
-  Map
+  Map,
+  FileText,
+  TestTube
 } from "lucide-react";
 
 export function MaritimeDashboard() {
@@ -103,7 +109,7 @@ export function MaritimeDashboard() {
 
           {/* Main Dashboard Tabs */}
           <Tabs defaultValue="overview" className="space-y-8">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="overview" className="flex items-center space-x-2">
                 <Activity className="h-4 w-4" />
                 <span>Vista General</span>
@@ -119,6 +125,14 @@ export function MaritimeDashboard() {
               <TabsTrigger value="realtime" className="flex items-center space-x-2">
                 <TrendingUp className="h-4 w-4" />
                 <span>Tiempo Real</span>
+              </TabsTrigger>
+              <TabsTrigger value="reports" className="flex items-center space-x-2">
+                <FileText className="h-4 w-4" />
+                <span>Reportes</span>
+              </TabsTrigger>
+              <TabsTrigger value="testing" className="flex items-center space-x-2">
+                <TestTube className="h-4 w-4" />
+                <span>Pruebas</span>
               </TabsTrigger>
               <TabsTrigger value="settings" className="flex items-center space-x-2">
                 <Settings className="h-4 w-4" />
@@ -236,6 +250,26 @@ export function MaritimeDashboard() {
                   <SystemMonitor />
                 </ErrorBoundary>
               </div>
+            </TabsContent>
+
+            {/* Reports Tab */}
+            <TabsContent value="reports" className="space-y-8">
+              <ErrorBoundary fallback={<div className="text-center p-4">Error cargando reportes</div>}>
+                <ReportsSystem />
+              </ErrorBoundary>
+              <ErrorBoundary fallback={<div className="text-center p-4">Error cargando exportador</div>}>
+                <DataExporter />
+              </ErrorBoundary>
+            </TabsContent>
+
+            {/* Testing Tab */}
+            <TabsContent value="testing" className="space-y-8">
+              <ErrorBoundary fallback={<div className="text-center p-4">Error cargando pruebas</div>}>
+                <SystemTests />
+              </ErrorBoundary>
+              <ErrorBoundary fallback={<div className="text-center p-4">Error cargando monitor</div>}>
+                <PerformanceMonitor />
+              </ErrorBoundary>
             </TabsContent>
 
             {/* Settings Tab */}
