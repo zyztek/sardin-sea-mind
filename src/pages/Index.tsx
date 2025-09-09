@@ -1,4 +1,4 @@
-import { MaritimeDashboard } from "@/components/dashboard/MaritimeDashboard";
+import { MaritimeDashboard } from "@/components/dashboard/MaritimeDashboardAuth";
 const Index = () => {
   return <MaritimeDashboard />;
 };
