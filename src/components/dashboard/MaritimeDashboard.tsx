@@ -76,9 +76,9 @@ export function MaritimeDashboard() {
       <SEO />
       <div className="min-h-screen bg-gradient-to-br from-background to-background/80">
         <MaritimeHeader 
+          isConnected={isConnected}
           systemStatus="operational"
           aiStatus="active"
-          communicationStatus={isConnected ? "connected" : "offline"}
         />
         
         <main className="container mx-auto px-6 py-8">
