@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { ErrorLogger } from "@/components/common/ErrorLogger";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { SEO } from "@/components/common/SEO";
+import { ConnectionStatus } from "@/components/common/ConnectionStatus";
 import { MaritimeHeader } from "@/components/layout/MaritimeHeader";
 import { MetricsGrid } from "@/components/dashboard/MetricsGrid";
 import { AIInsightCard } from "@/components/dashboard/AIInsightCard";
@@ -72,7 +74,7 @@ export function MaritimeDashboard() {
   ];
 
   return (
-    <ErrorBoundary>
+    <ErrorLogger>
       <SEO />
       <div className="min-h-screen bg-gradient-to-br from-background to-background/80">
         <MaritimeHeader 
@@ -82,6 +84,10 @@ export function MaritimeDashboard() {
         />
         
         <main className="container mx-auto px-6 py-8">
+          {/* Connection Status */}
+          <div className="mb-6">
+            <ConnectionStatus />
+          </div>
           {/* Welcome Section */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
@@ -281,6 +287,6 @@ export function MaritimeDashboard() {
           </Tabs>
         </main>
       </div>
-    </ErrorBoundary>
+    </ErrorLogger>
   );
 }
