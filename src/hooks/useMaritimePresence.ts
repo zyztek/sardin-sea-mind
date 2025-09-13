@@ -24,9 +24,16 @@ export const useMaritimePresence = () => {
       .on('presence', { event: 'sync' }, () => {
         const newState = maritimeRoom.presenceState();
         const users = Object.keys(newState).map(key => {
-          const presence = newState[key][0] as UserPresence;
-          return presence;
-        });
+          const presenceArray = newState[key];
+          if (presenceArray && presenceArray.length > 0) {
+            const presence = presenceArray[0];
+            // Check if presence has the expected UserPresence properties
+            if (presence && typeof presence === 'object' && 'user_id' in presence) {
+              return presence as unknown as UserPresence;
+            }
+          }
+          return null;
+        }).filter(Boolean) as UserPresence[];
         setOnlineUsers(users);
       })
       .on('presence', { event: 'join' }, ({ key, newPresences }) => {
