@@ -24,6 +24,21 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				// Maritime Color Extensions
+				'maritime-deep': 'hsl(var(--maritime-deep))',
+				'maritime-primary': 'hsl(var(--maritime-primary))',
+				'maritime-secondary': 'hsl(var(--maritime-secondary))',
+				'maritime-accent': 'hsl(var(--maritime-accent))',
+				'maritime-light': 'hsl(var(--maritime-light))',
+				'maritime-foam': 'hsl(var(--maritime-foam))',
+				'ocean-abyss': 'hsl(var(--ocean-abyss))',
+				'ocean-deep': 'hsl(var(--ocean-deep))',
+				'ocean-mid': 'hsl(var(--ocean-mid))',
+				'ocean-surface': 'hsl(var(--ocean-surface))',
+				'ai-neural': 'hsl(var(--ai-neural))',
+				'ai-data': 'hsl(var(--ai-data))',
+				'ai-prediction': 'hsl(var(--ai-prediction))',
+				'ai-alert': 'hsl(var(--ai-alert))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'

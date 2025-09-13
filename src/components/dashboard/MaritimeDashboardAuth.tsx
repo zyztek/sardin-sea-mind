@@ -18,8 +18,13 @@ import { SystemTests } from '@/components/testing/SystemTests';
 import { MaritimeSettings } from '@/components/dashboard/MaritimeSettings';
 import { PerformanceMonitor } from '@/components/dashboard/PerformanceMonitor';
 import { AnalyticsAndInsights } from '@/components/dashboard/AnalyticsAndInsights';
+import { CrewPresence } from '@/components/dashboard/CrewPresence';
+import { ConnectionStatus } from '@/components/common/ConnectionStatus';
+import { ErrorLogger } from '@/components/common/ErrorLogger';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMaritimeDatabase } from '@/hooks/useMaritimeDatabase';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
+import { useOfflineMode } from '@/hooks/useOfflineMode';
 import { 
   Navigation, 
   BarChart3, 
@@ -39,6 +44,10 @@ export const MaritimeDashboard: React.FC = () => {
     useAIInsights,
     useSystemAlerts,
   } = useMaritimeDatabase();
+
+  // Enable real-time updates
+  useRealTimeData();
+  const { isOnline } = useOfflineMode();
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVessel, setSelectedVessel] = useState<string | undefined>();
@@ -130,9 +139,11 @@ export const MaritimeDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-maritime-light/20">
+      <ConnectionStatus />
+      <ErrorLogger />
       <div className="container mx-auto p-6 space-y-6">
         <MaritimeHeader 
-          isConnected={isConnected}
+          isConnected={isConnected && isOnline}
           systemStatus={systemStatus}
           aiStatus={aiStatus}
         />
@@ -198,28 +209,35 @@ export const MaritimeDashboard: React.FC = () => {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <ErrorBoundary>
-                  <AIInsightCard 
-                    insight={{
-                      id: '1',
-                      type: 'prediction',
-                      title: 'Weather Analysis',
-                      description: 'Favorable conditions for next 6 hours',
-                      confidence: 0.9,
-                      priority: 'medium',
-                      timestamp: new Date().toISOString()
-                    }}
-                  />
-                </ErrorBoundary>
-                <ErrorBoundary>
-                  <AlertsPanel />
-                </ErrorBoundary>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <ErrorBoundary>
+                    <AIInsightCard 
+                      insight={formattedInsights[0] || {
+                        id: '1',
+                        type: 'prediction',
+                        title: 'Weather Analysis',
+                        description: 'Favorable conditions for next 6 hours',
+                        confidence: 0.9,
+                        priority: 'medium',
+                        timestamp: new Date().toISOString()
+                      }}
+                    />
+                  </ErrorBoundary>
+                  <ErrorBoundary>
+                    <AlertsPanel />
+                  </ErrorBoundary>
+                </div>
+                <div className="mt-6">
+                  <ErrorBoundary>
+                    <SystemMonitor />
+                  </ErrorBoundary>
+                </div>
               </div>
               <div>
                 <ErrorBoundary>
-                  <SystemMonitor />
+                  <CrewPresence />
                 </ErrorBoundary>
               </div>
             </div>
