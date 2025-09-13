@@ -102,12 +102,13 @@ export const MaritimeDashboard: React.FC = () => {
 
   // Convert database insights to component format
   const formattedInsights = aiInsights?.map(insight => ({
-    type: insight.insight_type,
+    id: insight.id,
+    type: insight.insight_type as 'prediction' | 'recommendation' | 'alert' | 'optimization',
     title: insight.title,
     description: insight.description,
-    confidence: insight.confidence || 0.8,
+    confidence: Math.round((insight.confidence || 0.8) * 100),
     priority: insight.priority || 'medium',
-    timestamp: new Date(insight.created_at),
+    timestamp: new Date(insight.created_at).toLocaleString(),
   })) || [];
 
   // Convert sensor data to metrics format
@@ -138,15 +139,17 @@ export const MaritimeDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-maritime-light/20">
-      <ConnectionStatus />
-      <ErrorLogger />
-      <div className="container mx-auto p-6 space-y-6">
-        <MaritimeHeader 
-          isConnected={isConnected && isOnline}
-          systemStatus={systemStatus}
-          aiStatus={aiStatus}
-        />
+    <ErrorLogger>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-maritime-light/20">
+        <div className="fixed top-4 right-4 z-50 space-y-2">
+          <ConnectionStatus />
+        </div>
+        <div className="container mx-auto p-6 space-y-6">
+          <MaritimeHeader 
+            isConnected={isConnected && isOnline}
+            systemStatus={systemStatus}
+            aiStatus={aiStatus}
+          />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
           <Card className="maritime-panel">
@@ -216,12 +219,12 @@ export const MaritimeDashboard: React.FC = () => {
                     <AIInsightCard 
                       insight={formattedInsights[0] || {
                         id: '1',
-                        type: 'prediction',
+                        type: 'prediction' as const,
                         title: 'Weather Analysis',
                         description: 'Favorable conditions for next 6 hours',
-                        confidence: 0.9,
-                        priority: 'medium',
-                        timestamp: new Date().toISOString()
+                        confidence: 90,
+                        priority: 'medium' as const,
+                        timestamp: new Date().toLocaleString()
                       }}
                     />
                   </ErrorBoundary>
@@ -301,7 +304,8 @@ export const MaritimeDashboard: React.FC = () => {
             </ErrorBoundary>
           </TabsContent>
         </Tabs>
+        </div>
       </div>
-    </div>
+    </ErrorLogger>
   );
 };
