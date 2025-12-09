@@ -1,0 +1,30 @@
+# CODEOWNERS - Asignación automática de revisores
+
+# Owners globales (revisan todo)
+* @sardin-ai/core-team
+
+# Documentación
+/docs/ @sardin-ai/docs-team
+
+# Agentes IA
+/src/agents/ @sardin-ai/ai-team
+
+# Servicios y APIs
+/src/services/ @sardin-ai/backend-team
+
+# Componentes UI
+/src/components/ @sardin-ai/frontend-team
+
+# Integraciones
+/src/integrations/ @sardin-ai/backend-team
+
+# Configuración Docker
+/docker-compose.yml @sardin-ai/devops-team
+/Dockerfile @sardin-ai/devops-team
+/pocketbase/ @sardin-ai/devops-team
+
+# CI/CD
+/.github/workflows/ @sardin-ai/devops-team
+
+# Tests
+/src/__tests__/ @sardin-ai/qa-team

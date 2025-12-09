@@ -10,6 +10,7 @@ import { Anchor, Ship, Waves } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { SEO } from '@/components/common/SEO';
+import type { MaritimeRole } from '@/integrations/pocketbase/types';
 
 const Auth: React.FC = () => {
   const { signIn, signUp, isAuthenticated, isLoading } = useAuth();
@@ -23,7 +24,7 @@ const Auth: React.FC = () => {
   const [signUpEmail, setSignUpEmail] = useState('');
   const [signUpPassword, setSignUpPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [maritimeRole, setMaritimeRole] = useState('observer');
+  const [maritimeRole, setMaritimeRole] = useState<MaritimeRole>('observer');
 
   // Redirect if already authenticated
   if (isAuthenticated) {
@@ -37,32 +38,32 @@ const Auth: React.FC = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     const { error } = await signIn(signInEmail, signInPassword);
-    
+
     setIsSubmitting(false);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     const { error } = await signUp(signUpEmail, signUpPassword, fullName, maritimeRole);
-    
+
     setIsSubmitting(false);
   };
 
   return (
     <>
-      <SEO 
+      <SEO
         title="Maritime Authentication - SARDIN-AI"
         description="Access your maritime AI dashboard. Sign in or register for SARDIN-AI maritime intelligence system."
         keywords="maritime authentication, SARDIN-AI login, ship navigation system, maritime AI"
       />
-      
+
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-gradient-to-br from-maritime-foam via-transparent to-maritime-light/20"></div>
-        
+
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <Waves className="absolute top-20 left-10 w-8 h-8 text-maritime-accent/20 wave-motion" />
@@ -144,7 +145,7 @@ const Auth: React.FC = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="maritime-role">Maritime Role</Label>
-                    <Select value={maritimeRole} onValueChange={setMaritimeRole}>
+                    <Select value={maritimeRole} onValueChange={(v) => setMaritimeRole(v as MaritimeRole)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>

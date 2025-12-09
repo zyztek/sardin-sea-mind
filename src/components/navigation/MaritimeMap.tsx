@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Map, 
-  MapPin, 
-  Navigation, 
-  Anchor, 
-  Fish, 
+import {
+  Map as MapIcon,
+  MapPin,
+  Navigation,
+  Anchor,
+  Fish,
   Layers,
   ZoomIn,
   ZoomOut,
@@ -14,15 +14,7 @@ import {
   Route
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-
-interface Waypoint {
-  id: string;
-  name: string;
-  lat: number;
-  lng: number;
-  type: 'destination' | 'waypoint' | 'fishing_zone' | 'harbor';
-  status: 'completed' | 'active' | 'pending';
-}
+import { Waypoint } from "@/types/maritime";
 
 interface MapLayer {
   id: string;
@@ -39,12 +31,12 @@ interface MaritimeMapProps {
   className?: string;
 }
 
-export function MaritimeMap({ 
-  waypoints, 
-  currentPosition, 
-  onWaypointSelect, 
+export function MaritimeMap({
+  waypoints,
+  currentPosition,
+  onWaypointSelect,
   onLayerToggle,
-  className = "" 
+  className = ""
 }: MaritimeMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(12);
@@ -53,7 +45,7 @@ export function MaritimeMap({
     { id: 'bathymetry', name: 'Batimetría', enabled: true, icon: Layers },
     { id: 'fishing', name: 'Zonas de Pesca', enabled: true, icon: Fish },
     { id: 'navigation', name: 'Navegación', enabled: true, icon: Navigation },
-    { id: 'weather', name: 'Meteorología', enabled: false, icon: Map }
+    { id: 'weather', name: 'Meteorología', enabled: false, icon: MapIcon }
   ]);
 
   // Convert coordinates to screen position (simple projection)
@@ -61,14 +53,14 @@ export function MaritimeMap({
     const centerLat = currentPosition.lat;
     const centerLng = currentPosition.lng;
     const scale = Math.pow(2, zoom - 8);
-    
+
     const x = ((lng - centerLng) * scale * 100) + 200;
     const y = ((centerLat - lat) * scale * 100) + 150;
-    
+
     return { x, y };
   };
 
-  const getWaypointIcon = (type: string) => {
+  const getWaypointIcon = (type: string = 'waypoint') => {
     switch (type) {
       case 'destination':
         return '🏁';
@@ -83,7 +75,7 @@ export function MaritimeMap({
     }
   };
 
-  const getWaypointColor = (status: string) => {
+  const getWaypointColor = (status: string = 'active') => {
     switch (status) {
       case 'completed':
         return 'border-emerald-500 bg-emerald-500/20';
@@ -102,7 +94,7 @@ export function MaritimeMap({
   };
 
   const toggleLayer = (layerId: string) => {
-    setLayers(prev => prev.map(layer => 
+    setLayers(prev => prev.map(layer =>
       layer.id === layerId ? { ...layer, enabled: !layer.enabled } : layer
     ));
     onLayerToggle?.(layerId);
@@ -117,7 +109,7 @@ export function MaritimeMap({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center space-x-2">
-            <Map className="h-5 w-5 text-primary" />
+            <MapIcon className="h-5 w-5 text-primary" />
             <span>Mapa de Navegación</span>
             <Badge variant="outline">
               Zoom {zoom}x
@@ -136,10 +128,10 @@ export function MaritimeMap({
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-0">
         {/* Map Container */}
-        <div 
+        <div
           ref={mapRef}
           className="relative w-full h-80 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 overflow-hidden"
         >
@@ -174,7 +166,7 @@ export function MaritimeMap({
           )}
 
           {/* Current Position */}
-          <div 
+          <div
             className="absolute w-4 h-4 -ml-2 -mt-2 bg-red-500 rounded-full border-2 border-white shadow-lg animate-pulse"
             style={{
               left: `${coordToScreen(currentPosition.lat, currentPosition.lng).x}px`,
@@ -188,13 +180,11 @@ export function MaritimeMap({
 
           {/* Waypoints */}
           {waypoints.map((waypoint) => {
-            const pos = coordToScreen(waypoint.lat, waypoint.lng);
+            const pos = coordToScreen(waypoint.latitude, waypoint.longitude);
             return (
               <div
                 key={waypoint.id}
-                className={`absolute w-8 h-8 -ml-4 -mt-4 border-2 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 ${getWaypointColor(waypoint.status)} ${
-                  selectedWaypoint === waypoint.id ? 'ring-2 ring-primary ring-offset-1' : ''
-                }`}
+                className={`absolute w-8 h-8 -ml-4 -mt-4 border-2 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 ${getWaypointColor()}`}
                 style={{
                   left: `${pos.x}px`,
                   top: `${pos.y}px`,
@@ -202,9 +192,9 @@ export function MaritimeMap({
                 onClick={() => handleWaypointClick(waypoint)}
               >
                 <div className="flex items-center justify-center w-full h-full text-sm">
-                  {getWaypointIcon(waypoint.type)}
+                  {getWaypointIcon(waypoint.waypoint_type)}
                 </div>
-                
+
                 {/* Waypoint Label */}
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-card text-foreground text-xs px-2 py-1 rounded shadow-md whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
                   {waypoint.name}
@@ -216,17 +206,24 @@ export function MaritimeMap({
           {/* Route Line */}
           <svg className="absolute inset-0 pointer-events-none" width="100%" height="100%">
             <defs>
-              <marker id="arrowhead" markerWidth="10" markerHeight="7" 
-                      refX="9" refY="3.5" orient="auto">
+              <marker id="arrowhead" markerWidth="10" markerHeight="7"
+                refX="9" refY="3.5" orient="auto">
                 <polygon points="0 0, 10 3.5, 0 7" fill="rgba(59, 130, 246, 0.8)" />
               </marker>
             </defs>
             {waypoints.map((waypoint, index) => {
               if (index === 0) return null;
-              const prevWaypoint = index === 0 ? currentPosition : waypoints[index - 1];
-              const start = coordToScreen(prevWaypoint.lat, prevWaypoint.lng);
-              const end = coordToScreen(waypoint.lat, waypoint.lng);
-              
+              const prevWaypoint = index === 0 ? { latitude: currentPosition.lat, longitude: currentPosition.lng } : waypoints[index - 1];
+              // Handle first segment from current position if needed, but here we just link waypoints
+              // Actually, let's link current pos to first waypoint, then waypoint to waypoint
+
+              // Simplified: just link waypoints in order
+              const start = index === 1
+                ? coordToScreen(currentPosition.lat, currentPosition.lng)
+                : coordToScreen(waypoints[index - 1].latitude, waypoints[index - 1].longitude);
+
+              const end = coordToScreen(waypoint.latitude, waypoint.longitude);
+
               return (
                 <line
                   key={`route-${index}`}
@@ -287,13 +284,13 @@ export function MaritimeMap({
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-medium">{waypoint.name}</h4>
-                      <Badge variant="outline" className={getWaypointColor(waypoint.status)}>
-                        {waypoint.status}
+                      <Badge variant="outline" className={getWaypointColor()}>
+                        Active
                       </Badge>
                     </div>
                     <div className="text-sm text-muted-foreground space-y-1">
-                      <div>Coordenadas: {waypoint.lat.toFixed(4)}, {waypoint.lng.toFixed(4)}</div>
-                      <div>Tipo: {waypoint.type}</div>
+                      <div>Coordenadas: {waypoint.latitude.toFixed(4)}, {waypoint.longitude.toFixed(4)}</div>
+                      <div>Tipo: {waypoint.waypoint_type}</div>
                     </div>
                     <div className="flex space-x-2 mt-3">
                       <Button size="sm" variant="outline">

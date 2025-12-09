@@ -1,3 +1,4 @@
+```javascript
 import { useState } from "react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { ErrorLogger } from "@/components/common/ErrorLogger";
@@ -22,8 +23,10 @@ import { MaritimeMap } from "@/components/navigation/MaritimeMap";
 import { NavigationControls } from "@/components/navigation/NavigationControls";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMaritimeData } from "@/hooks/useMaritimeData";
-import { 
+import { useRealTimeData } from "@/hooks/useRealTimeData";
+import { useMaritimeDatabase } from "@/hooks/useMaritimeDatabase";
+import { DataSeeder } from "@/components/common/DataSeeder";
+import {
   TrendingUp,
   AlertTriangle,
   BarChart3,
@@ -35,8 +38,26 @@ import {
 } from "lucide-react";
 
 export function MaritimeDashboard() {
-  const { metrics, insights, isConnected } = useMaritimeData();
+  const { sensorData, aiInsights, alerts } = useRealTimeData();
+  const { useWaypoints } = useMaritimeDatabase();
+  const { data: waypoints } = useWaypoints();
+  
   const [isLoading, setIsLoading] = useState(false);
+  const [isSimulationActive, setIsSimulationActive] = useState(false);
+
+  // Get latest sensor data or default to empty
+  const currentMetrics = sensorData[0] || {
+    speed: 0,
+    heading: 0,
+    latitude: 0,
+    longitude: 0,
+    depth: 0,
+    water_temp: 0,
+    wind_speed: 0,
+    wind_direction: 0,
+    fuel_level: 0,
+    battery_level: 0
+  };
 
   if (isLoading) {
     return (
@@ -46,43 +67,17 @@ export function MaritimeDashboard() {
     );
   }
 
-  const mockWaypoints = [
-    {
-      id: '1',
-      name: 'Puerto Base',
-      lat: 42.3601,
-      lng: -71.0589,
-      type: 'destination' as const,
-      status: 'completed' as const
-    },
-    {
-      id: '2',
-      name: 'Zona Pesca A',
-      lat: 42.4601,
-      lng: -71.1589,
-      type: 'fishing_zone' as const,
-      status: 'active' as const
-    },
-    {
-      id: '3',
-      name: 'Punto Control',
-      lat: 42.5601,
-      lng: -71.2589,
-      type: 'waypoint' as const,
-      status: 'pending' as const
-    }
-  ];
-
   return (
     <ErrorLogger>
       <SEO />
+      <DataSeeder isActive={isSimulationActive} />
       <div className="min-h-screen bg-gradient-to-br from-background to-background/80">
-        <MaritimeHeader 
-          isConnected={isConnected}
+        <MaritimeHeader
+          isConnected={true}
           systemStatus="operational"
           aiStatus="active"
         />
-        
+
         <main className="container mx-auto px-6 py-8">
           {/* Connection Status */}
           <div className="mb-6">
@@ -99,10 +94,10 @@ export function MaritimeDashboard() {
                   Sistema Autónomo de Navegación Marítima con Inteligencia Artificial
                 </p>
               </div>
-              {!isConnected && (
-                <div className="flex items-center space-x-2 px-4 py-2 bg-red-50 border border-red-200 rounded-lg">
-                  <AlertTriangle className="h-4 w-4 text-red-500" />
-                  <span className="text-sm text-red-700">Conexión perdida</span>
+              {isSimulationActive && (
+                <div className="flex items-center space-x-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg">
+                  <Activity className="h-4 w-4 text-blue-500" />
+                  <span className="text-sm text-blue-700">Modo Simulación Activo</span>
                 </div>
               )}
             </div>
@@ -158,13 +153,17 @@ export function MaritimeDashboard() {
                     </h2>
                     <ErrorBoundary>
                       <div className="space-y-4">
-                        {insights.map((insight) => (
+                        {aiInsights.length > 0 ? aiInsights.map((insight) => (
                           <AIInsightCard
                             key={insight.id}
                             insight={insight}
                             onAction={(insight) => console.log('Action on:', insight)}
                           />
-                        ))}
+                        )) : (
+                          <div className="text-center p-4 text-muted-foreground bg-muted/20 rounded-lg">
+                            Esperando insights de IA...
+                          </div>
+                        )}
                       </div>
                     </ErrorBoundary>
                   </div>
@@ -197,16 +196,16 @@ export function MaritimeDashboard() {
                   <ErrorBoundary>
                     <AlertsPanel />
                   </ErrorBoundary>
-                  
+
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <ErrorBoundary>
                       <SystemMonitor />
                     </ErrorBoundary>
                     <ErrorBoundary>
-                      <FishingInsights />
+                      <FishingInsights insights={aiInsights} />
                     </ErrorBoundary>
                     <ErrorBoundary>
-                      <WeatherWidget />
+                      <WeatherWidget data={currentMetrics} />
                     </ErrorBoundary>
                   </div>
                 </div>
@@ -219,8 +218,8 @@ export function MaritimeDashboard() {
                 <div className="lg:col-span-2">
                   <ErrorBoundary>
                     <MaritimeMap
-                      waypoints={mockWaypoints}
-                      currentPosition={metrics.position}
+                      waypoints={waypoints || []}
+                      currentPosition={{ lat: currentMetrics.latitude || 0, lng: currentMetrics.longitude || 0 }}
                       onWaypointSelect={(waypoint) => console.log('Selected:', waypoint)}
                       onLayerToggle={(layerId) => console.log('Toggled layer:', layerId)}
                     />
@@ -241,7 +240,7 @@ export function MaritimeDashboard() {
                   <AdvancedMetrics />
                 </ErrorBoundary>
                 <ErrorBoundary>
-                  <FishingInsights />
+                  <FishingInsights insights={aiInsights} />
                 </ErrorBoundary>
               </div>
             </TabsContent>
@@ -281,7 +280,10 @@ export function MaritimeDashboard() {
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-8">
               <ErrorBoundary>
-                <MaritimeSettings />
+                <MaritimeSettings
+                  isSimulationActive={isSimulationActive}
+                  onSimulationChange={setIsSimulationActive}
+                />
               </ErrorBoundary>
             </TabsContent>
           </Tabs>
@@ -290,3 +292,4 @@ export function MaritimeDashboard() {
     </ErrorLogger>
   );
 }
+```

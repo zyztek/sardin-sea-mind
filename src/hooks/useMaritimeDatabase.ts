@@ -1,240 +1,317 @@
+/**
+ * SARDIN-AI - Hook de Base de Datos Marítima (PocketBase)
+ * 
+ * Hook React para operaciones CRUD con React Query.
+ * Migrado de Supabase a PocketBase.
+ * 
+ * @author Sistema Autónomo SARDIN-AI
+ * @date 2025-12-09
+ */
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { SensorData, AIInsight, Vessel, Waypoint, SystemAlert } from '@/types/maritime';
+import { pb, getCurrentUser } from '@/integrations/pocketbase/client';
+import {
+  vesselsService,
+  sensorDataService,
+  aiInsightsService,
+  waypointsService,
+  systemAlertsService,
+} from '@/integrations/pocketbase/services';
+import type {
+  Vessel,
+  SensorData,
+  AIInsight,
+  Waypoint,
+  SystemAlert,
+  CreateSensorData,
+  CreateAIInsight,
+  CreateWaypoint,
+} from '@/integrations/pocketbase/types';
 import { useToast } from '@/hooks/use-toast';
 
 export const useMaritimeDatabase = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch vessels
+  // ========================================
+  // QUERIES (Lectura)
+  // ========================================
+
+  /**
+   * Obtener todas las embarcaciones
+   */
   const useVessels = () => {
     return useQuery({
       queryKey: ['vessels'],
       queryFn: async (): Promise<Vessel[]> => {
-        const { data, error } = await supabase
-          .from('vessels')
-          .select('*')
-          .order('name');
-        
-        if (error) throw error;
-        return data || [];
+        const result = await vesselsService.getAll();
+        return result.items;
       },
     });
   };
 
-  // Fetch latest sensor data
+  /**
+   * Obtener datos de sensores más recientes
+   */
   const useLatestSensorData = (vesselId?: string) => {
     return useQuery({
       queryKey: ['sensor_data', 'latest', vesselId],
       queryFn: async (): Promise<SensorData | null> => {
-        let query = supabase
-          .from('sensor_data')
-          .select('*')
-          .order('timestamp', { ascending: false })
-          .limit(1);
-
         if (vesselId) {
-          query = query.eq('vessel_id', vesselId);
+          return sensorDataService.getLatest(vesselId);
         }
-        
-        const { data, error } = await query.maybeSingle();
-        
-        if (error) throw error;
-        return data;
+        const result = await sensorDataService.getRecent(undefined, 1);
+        return result[0] || null;
       },
-      refetchInterval: 5000, // Refresh every 5 seconds
+      refetchInterval: 5000, // Refrescar cada 5 segundos
     });
   };
 
-  // Fetch AI insights
+  /**
+   * Obtener historial de datos de sensores
+   */
+  const useSensorDataHistory = (vesselId?: string, limit = 50) => {
+    return useQuery({
+      queryKey: ['sensor_data', 'history', vesselId, limit],
+      queryFn: async (): Promise<SensorData[]> => {
+        return sensorDataService.getRecent(vesselId, limit);
+      },
+    });
+  };
+
+  /**
+   * Obtener insights de IA
+   */
   const useAIInsights = (vesselId?: string) => {
     return useQuery({
       queryKey: ['ai_insights', vesselId],
       queryFn: async (): Promise<AIInsight[]> => {
-        let query = supabase
-          .from('ai_insights')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(10);
-
+        const insights = await aiInsightsService.getActive();
         if (vesselId) {
-          query = query.eq('vessel_id', vesselId);
+          return insights.filter(i => i.vessel === vesselId);
         }
-        
-        const { data, error } = await query;
-        
-        if (error) throw error;
-        return data as AIInsight[] || [];
+        return insights;
       },
     });
   };
 
-  // Fetch waypoints
+  /**
+   * Obtener waypoints
+   */
   const useWaypoints = (vesselId?: string) => {
     return useQuery({
       queryKey: ['waypoints', vesselId],
       queryFn: async (): Promise<Waypoint[]> => {
-        let query = supabase
-          .from('waypoints')
-          .select('*')
-          .order('created_at', { ascending: false });
-
         if (vesselId) {
-          query = query.eq('vessel_id', vesselId);
+          return waypointsService.getByVessel(vesselId);
         }
-        
-        const { data, error } = await query;
-        
-        if (error) throw error;
-        return data || [];
+        return waypointsService.getAll();
       },
     });
   };
 
-  // Fetch system alerts
+  /**
+   * Obtener alertas del sistema
+   */
   const useSystemAlerts = (vesselId?: string) => {
     return useQuery({
       queryKey: ['system_alerts', vesselId],
       queryFn: async (): Promise<SystemAlert[]> => {
-        let query = supabase
-          .from('system_alerts')
-          .select('*')
-          .eq('acknowledged', false)
-          .order('created_at', { ascending: false })
-          .limit(20);
-
+        const alerts = await systemAlertsService.getUnacknowledged();
         if (vesselId) {
-          query = query.eq('vessel_id', vesselId);
+          return alerts.filter(a => a.vessel === vesselId);
         }
-        
-        const { data, error } = await query;
-        
-        if (error) throw error;
-        return data as SystemAlert[] || [];
+        return alerts;
       },
     });
   };
 
-  // Add sensor data
+  // ========================================
+  // MUTATIONS (Escritura)
+  // ========================================
+
+  /**
+   * Agregar datos de sensores
+   */
   const useAddSensorData = () => {
     return useMutation({
-      mutationFn: async (sensorData: Omit<SensorData, 'id' | 'created_by'>) => {
-        const { data, error } = await supabase
-          .from('sensor_data')
-          .insert([{ ...sensorData, created_by: (await supabase.auth.getUser()).data.user?.id }])
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return data;
+      mutationFn: async (data: Omit<CreateSensorData, 'created_by'>) => {
+        const user = getCurrentUser();
+        return sensorDataService.create({
+          ...data,
+          created_by: user?.id,
+        } as CreateSensorData);
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['sensor_data'] });
         toast({
-          title: "Sensor Data Updated",
-          description: "Maritime sensor data has been recorded.",
+          title: "Datos de Sensor Actualizados",
+          description: "Los datos del sensor marítimo han sido registrados.",
         });
       },
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: error.message || "Failed to add sensor data.",
+          description: error.message || "Error al agregar datos del sensor.",
           variant: "destructive",
         });
       },
     });
   };
 
-  // Add AI insight
+  /**
+   * Agregar insight de IA
+   */
   const useAddAIInsight = () => {
     return useMutation({
-      mutationFn: async (insight: Omit<AIInsight, 'id' | 'created_by' | 'created_at'>) => {
-        const { data, error } = await supabase
-          .from('ai_insights')
-          .insert([{ ...insight, created_by: (await supabase.auth.getUser()).data.user?.id }])
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return data;
+      mutationFn: async (data: Omit<CreateAIInsight, 'created_by'>) => {
+        const user = getCurrentUser();
+        return aiInsightsService.create({
+          ...data,
+          created_by: user?.id,
+        } as CreateAIInsight);
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['ai_insights'] });
         toast({
-          title: "AI Insight Added",
-          description: "New maritime intelligence insight has been generated.",
+          title: "Insight IA Agregado",
+          description: "Nuevo insight de inteligencia marítima generado.",
         });
       },
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: error.message || "Failed to add AI insight.",
+          description: error.message || "Error al agregar insight de IA.",
           variant: "destructive",
         });
       },
     });
   };
 
-  // Add waypoint
+  /**
+   * Resolver insight de IA
+   */
+  const useResolveAIInsight = () => {
+    return useMutation({
+      mutationFn: async (insightId: string) => {
+        return aiInsightsService.resolve(insightId);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['ai_insights'] });
+        toast({
+          title: "Insight Resuelto",
+          description: "El insight ha sido marcado como resuelto.",
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          title: "Error",
+          description: error.message || "Error al resolver insight.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  /**
+   * Agregar waypoint
+   */
   const useAddWaypoint = () => {
     return useMutation({
-      mutationFn: async (waypoint: Omit<Waypoint, 'id' | 'created_by' | 'created_at'>) => {
-        const { data, error } = await supabase
-          .from('waypoints')
-          .insert([{ ...waypoint, created_by: (await supabase.auth.getUser()).data.user?.id }])
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return data;
+      mutationFn: async (data: Omit<CreateWaypoint, 'created_by'>) => {
+        const user = getCurrentUser();
+        return waypointsService.create({
+          ...data,
+          created_by: user?.id,
+        } as CreateWaypoint);
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['waypoints'] });
         toast({
-          title: "Waypoint Added",
-          description: "New navigation waypoint has been created.",
+          title: "Waypoint Agregado",
+          description: "Nuevo punto de navegación creado.",
         });
       },
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: error.message || "Failed to add waypoint.",
+          description: error.message || "Error al agregar waypoint.",
           variant: "destructive",
         });
       },
     });
   };
 
-  // Acknowledge alert
-  const useAcknowledgeAlert = () => {
+  /**
+   * Eliminar waypoint
+   */
+  const useDeleteWaypoint = () => {
     return useMutation({
-      mutationFn: async (alertId: string) => {
-        const { data, error } = await supabase
-          .from('system_alerts')
-          .update({ 
-            acknowledged: true, 
-            acknowledged_at: new Date().toISOString(),
-            acknowledged_by: (await supabase.auth.getUser()).data.user?.id 
-          })
-          .eq('id', alertId)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return data;
+      mutationFn: async (waypointId: string) => {
+        return waypointsService.delete(waypointId);
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['system_alerts'] });
+        queryClient.invalidateQueries({ queryKey: ['waypoints'] });
         toast({
-          title: "Alert Acknowledged",
-          description: "System alert has been acknowledged.",
+          title: "Waypoint Eliminado",
+          description: "Punto de navegación eliminado.",
         });
       },
       onError: (error: any) => {
         toast({
           title: "Error",
-          description: error.message || "Failed to acknowledge alert.",
+          description: error.message || "Error al eliminar waypoint.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  /**
+   * Reconocer alerta
+   */
+  const useAcknowledgeAlert = () => {
+    return useMutation({
+      mutationFn: async (alertId: string) => {
+        const user = getCurrentUser();
+        return systemAlertsService.acknowledge(alertId, user?.id || '');
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['system_alerts'] });
+        toast({
+          title: "Alerta Reconocida",
+          description: "La alerta del sistema ha sido reconocida.",
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          title: "Error",
+          description: error.message || "Error al reconocer alerta.",
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  /**
+   * Agregar embarcación
+   */
+  const useAddVessel = () => {
+    return useMutation({
+      mutationFn: async (data: Omit<Vessel, 'id' | 'created' | 'updated' | 'collectionId' | 'collectionName'>) => {
+        return vesselsService.create(data);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['vessels'] });
+        toast({
+          title: "Embarcación Agregada",
+          description: "Nueva embarcación registrada en el sistema.",
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          title: "Error",
+          description: error.message || "Error al agregar embarcación.",
           variant: "destructive",
         });
       },
@@ -242,14 +319,22 @@ export const useMaritimeDatabase = () => {
   };
 
   return {
+    // Queries
     useVessels,
     useLatestSensorData,
+    useSensorDataHistory,
     useAIInsights,
     useWaypoints,
     useSystemAlerts,
+    // Mutations
     useAddSensorData,
     useAddAIInsight,
+    useResolveAIInsight,
     useAddWaypoint,
+    useDeleteWaypoint,
     useAcknowledgeAlert,
+    useAddVessel,
   };
 };
+
+export default useMaritimeDatabase;

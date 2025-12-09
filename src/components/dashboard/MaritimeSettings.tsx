@@ -5,25 +5,43 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { 
+import {
   Settings,
   Bell,
   Shield,
   Zap,
   Satellite,
   Brain,
-  Eye,
-  Volume2,
+  RotateCcw,
   Save,
-  RotateCcw
+  Activity
 } from "lucide-react";
 
 interface MaritimeSettingsProps {
   className?: string;
+  isSimulationActive?: boolean;
+  onSimulationChange?: (active: boolean) => void;
 }
 
-export function MaritimeSettings({ className = "" }: MaritimeSettingsProps) {
+export function MaritimeSettings({
+  className = "",
+  isSimulationActive = false,
+  onSimulationChange
+}: MaritimeSettingsProps) {
   const settingsCategories = [
+    {
+      name: "Simulación y Pruebas",
+      icon: Activity,
+      settings: [
+        {
+          id: "simulation_mode",
+          name: "Modo Simulación (Data Seeder)",
+          type: "boolean",
+          value: isSimulationActive,
+          onChange: onSimulationChange
+        }
+      ]
+    },
     {
       name: "Navegación",
       icon: Satellite,
@@ -86,7 +104,7 @@ export function MaritimeSettings({ className = "" }: MaritimeSettingsProps) {
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         {settingsCategories.map((category, categoryIndex) => {
           const CategoryIcon = category.icon;
@@ -96,7 +114,7 @@ export function MaritimeSettings({ className = "" }: MaritimeSettingsProps) {
                 <CategoryIcon className="h-4 w-4 text-primary" />
                 <h3 className="font-semibold text-foreground">{category.name}</h3>
               </div>
-              
+
               <div className="space-y-4 pl-6">
                 {category.settings.map((setting, settingIndex) => (
                   <div key={setting.id} className="space-y-2">
@@ -105,13 +123,14 @@ export function MaritimeSettings({ className = "" }: MaritimeSettingsProps) {
                         {setting.name}
                       </Label>
                       {setting.type === "boolean" && (
-                        <Switch 
+                        <Switch
                           id={setting.id}
                           checked={setting.value as boolean}
+                          onCheckedChange={setting.onChange ? (checked) => setting.onChange?.(checked) : undefined}
                         />
                       )}
                     </div>
-                    
+
                     {setting.type === "range" && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
@@ -138,14 +157,14 @@ export function MaritimeSettings({ className = "" }: MaritimeSettingsProps) {
                   </div>
                 ))}
               </div>
-              
+
               {categoryIndex < settingsCategories.length - 1 && (
                 <Separator className="my-6" />
               )}
             </div>
           );
         })}
-        
+
         {/* System Status */}
         <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 rounded-lg p-4">
           <div className="flex items-center space-x-2 mb-3">
@@ -154,7 +173,7 @@ export function MaritimeSettings({ className = "" }: MaritimeSettingsProps) {
               Estado del Sistema
             </span>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="space-y-1">
               <div className="flex justify-between">

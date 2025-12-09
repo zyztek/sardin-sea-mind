@@ -1,27 +1,33 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+/**
+ * SARDIN-AI - Contexto de Autenticación (PocketBase)
+ * 
+ * Proveedor de contexto React para manejar la autenticación.
+ * Migrado de Supabase a PocketBase.
+ * 
+ * @author Sistema Autónomo SARDIN-AI
+ * @date 2025-12-09
+ */
+
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { pb, onAuthChange, getCurrentUser, isAuthenticated as pbIsAuthenticated } from '@/integrations/pocketbase/client';
+import {
+  signIn as pbSignIn,
+  signUp as pbSignUp,
+  signOut as pbSignOut,
+  getCurrentProfile,
+} from '@/integrations/pocketbase/auth';
+import type { Profile, MaritimeRole, PocketBaseUser } from '@/integrations/pocketbase/types';
 import { useToast } from '@/hooks/use-toast';
 
-interface MaritimeProfile {
-  id: string;
-  user_id: string;
-  full_name: string;
-  maritime_role: 'captain' | 'engineer' | 'navigator' | 'observer';
-  vessel_assignment?: string;
-  created_at: string;
-  updated_at: string;
-}
-
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  profile: MaritimeProfile | null;
+  user: PocketBaseUser | null;
+  profile: Profile | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string, fullName: string, role?: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName: string, role?: MaritimeRole) => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
   isAuthenticated: boolean;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -39,162 +45,160 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<MaritimeProfile | null>(null);
+  const [user, setUser] = useState<PocketBaseUser | null>(getCurrentUser() as PocketBaseUser | null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Fetch user profile with a delay to avoid recursive issues
-          setTimeout(() => {
-            fetchUserProfile(session.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-        }
-        
-        setIsLoading(false);
-      }
-    );
+  // Cargar perfil del usuario
+  const fetchUserProfile = useCallback(async () => {
+    if (!pbIsAuthenticated()) {
+      setProfile(null);
+      return;
+    }
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        setTimeout(() => {
-          fetchUserProfile(session.user.id);
-        }, 0);
-      }
-      
-      setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchUserProfile = async (userId: string) => {
     try {
-      const { data: profileData, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        return;
-      }
-
-      setProfile(profileData);
+      const userProfile = await getCurrentProfile();
+      setProfile(userProfile);
     } catch (error) {
       console.error('Error fetching profile:', error);
+      setProfile(null);
     }
-  };
+  }, []);
 
+  // Efecto inicial y suscripción a cambios de auth
+  useEffect(() => {
+    const initAuth = async () => {
+      setIsLoading(true);
+      try {
+        if (pbIsAuthenticated()) {
+          setUser(getCurrentUser() as PocketBaseUser);
+          await fetchUserProfile();
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initAuth();
+
+    // Suscribirse a cambios de autenticación
+    const unsubscribe = onAuthChange(() => {
+      const currentUser = getCurrentUser();
+      setUser(currentUser as PocketBaseUser | null);
+
+      if (currentUser) {
+        fetchUserProfile();
+      } else {
+        setProfile(null);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [fetchUserProfile]);
+
+  // Iniciar sesión
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      if (error) {
+      const result = await pbSignIn({ email, password });
+
+      if (!result.success) {
         toast({
-          title: "Sign In Failed",
-          description: error.message,
+          title: "Error de Inicio de Sesión",
+          description: result.error || "Credenciales inválidas",
           variant: "destructive",
         });
-      } else {
-        toast({
-          title: "Welcome aboard!",
-          description: "Successfully signed in to SARDIN-AI",
-        });
+        return { error: result.error };
       }
-      
-      return { error };
+
+      await fetchUserProfile();
+
+      toast({
+        title: "¡Bienvenido a bordo!",
+        description: "Sesión iniciada correctamente en SARDIN-AI",
+      });
+
+      return { error: null };
     } catch (error: any) {
       return { error };
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string, role: string = 'observer') => {
+  // Registrarse
+  const signUp = async (email: string, password: string, fullName: string, role: MaritimeRole = 'observer') => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { error } = await supabase.auth.signUp({
+      const result = await pbSignUp({
         email,
         password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            full_name: fullName,
-            maritime_role: role,
-          },
-        },
+        passwordConfirm: password,
+        name: fullName,
+        maritimeRole: role,
       });
 
-      if (error) {
+      if (!result.success) {
         toast({
-          title: "Sign Up Failed",
-          description: error.message,
+          title: "Error de Registro",
+          description: result.error || "No se pudo crear la cuenta",
           variant: "destructive",
         });
-      } else {
-        toast({
-          title: "Registration Successful!",
-          description: "Please check your email to confirm your account.",
-        });
+        return { error: result.error };
       }
 
-      return { error };
+      await fetchUserProfile();
+
+      toast({
+        title: "¡Registro Exitoso!",
+        description: "Tu cuenta ha sido creada. ¡Bienvenido a SARDIN-AI!",
+      });
+
+      return { error: null };
     } catch (error: any) {
       return { error };
     }
   };
 
+  // Cerrar sesión
   const signOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        toast({
-          title: "Sign Out Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Signed out",
-          description: "See you next voyage!",
-        });
-      }
-      
-      return { error };
+      pbSignOut();
+      setUser(null);
+      setProfile(null);
+
+      toast({
+        title: "Sesión Cerrada",
+        description: "¡Hasta la próxima navegación!",
+      });
+
+      return { error: null };
     } catch (error: any) {
+      toast({
+        title: "Error al Cerrar Sesión",
+        description: error.message || "Error desconocido",
+        variant: "destructive",
+      });
       return { error };
     }
+  };
+
+  // Refrescar perfil
+  const refreshProfile = async () => {
+    await fetchUserProfile();
   };
 
   const value: AuthContextType = {
     user,
-    session,
     profile,
     isLoading,
     signIn,
     signUp,
     signOut,
-    isAuthenticated: !!user,
+    isAuthenticated: pbIsAuthenticated(),
+    refreshProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export default AuthProvider;

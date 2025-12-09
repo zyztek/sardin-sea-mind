@@ -1,0 +1,639 @@
+[
+   {
+      "id": "profiles",
+      "name": "profiles",
+      "type": "base",
+      "system": false,
+      "schema": [
+         {
+            "id": "user_rel",
+            "name": "user",
+            "type": "relation",
+            "required": true,
+            "options": {
+               "collectionId": "_pb_users_auth_",
+               "cascadeDelete": true,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "email"
+               ]
+            }
+         },
+         {
+            "id": "full_name",
+            "name": "full_name",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 200
+            }
+         },
+         {
+            "id": "maritime_role",
+            "name": "maritime_role",
+            "type": "select",
+            "required": true,
+            "options": {
+               "maxSelect": 1,
+               "values": [
+                  "captain",
+                  "engineer",
+                  "navigator",
+                  "observer"
+               ]
+            }
+         },
+         {
+            "id": "vessel_assignment",
+            "name": "vessel_assignment",
+            "type": "text",
+            "required": false,
+            "options": {
+               "min": null,
+               "max": 200
+            }
+         },
+         {
+            "id": "avatar",
+            "name": "avatar",
+            "type": "file",
+            "required": false,
+            "options": {
+               "maxSelect": 1,
+               "maxSize": 5242880,
+               "mimeTypes": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp"
+               ]
+            }
+         }
+      ],
+      "indexes": [
+         "CREATE UNIQUE INDEX idx_profiles_user ON profiles (user)"
+      ],
+      "listRule": "@request.auth.id != ''",
+      "viewRule": "@request.auth.id != ''",
+      "createRule": "@request.auth.id = user",
+      "updateRule": "@request.auth.id = user",
+      "deleteRule": null
+   },
+   {
+      "id": "vessels",
+      "name": "vessels",
+      "type": "base",
+      "system": false,
+      "schema": [
+         {
+            "id": "name",
+            "name": "name",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 200
+            }
+         },
+         {
+            "id": "registration",
+            "name": "registration",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 50
+            }
+         },
+         {
+            "id": "vessel_type",
+            "name": "vessel_type",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 100
+            }
+         },
+         {
+            "id": "length_meters",
+            "name": "length_meters",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 500
+            }
+         },
+         {
+            "id": "max_speed_knots",
+            "name": "max_speed_knots",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 100
+            }
+         },
+         {
+            "id": "fuel_capacity_liters",
+            "name": "fuel_capacity_liters",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 1000000
+            }
+         },
+         {
+            "id": "crew_capacity",
+            "name": "crew_capacity",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 1000
+            }
+         },
+         {
+            "id": "image",
+            "name": "image",
+            "type": "file",
+            "required": false,
+            "options": {
+               "maxSelect": 1,
+               "maxSize": 10485760,
+               "mimeTypes": [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp"
+               ]
+            }
+         }
+      ],
+      "indexes": [
+         "CREATE UNIQUE INDEX idx_vessels_registration ON vessels (registration)"
+      ],
+      "listRule": "@request.auth.id != ''",
+      "viewRule": "@request.auth.id != ''",
+      "createRule": "@request.auth.id != ''",
+      "updateRule": "@request.auth.id != ''",
+      "deleteRule": "@request.auth.id != ''"
+   },
+   {
+      "id": "sensor_data",
+      "name": "sensor_data",
+      "type": "base",
+      "system": false,
+      "schema": [
+         {
+            "id": "vessel",
+            "name": "vessel",
+            "type": "relation",
+            "required": false,
+            "options": {
+               "collectionId": "vessels",
+               "cascadeDelete": true,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "name"
+               ]
+            }
+         },
+         {
+            "id": "timestamp",
+            "name": "timestamp",
+            "type": "date",
+            "required": true,
+            "options": {}
+         },
+         {
+            "id": "latitude",
+            "name": "latitude",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": -90,
+               "max": 90
+            }
+         },
+         {
+            "id": "longitude",
+            "name": "longitude",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": -180,
+               "max": 180
+            }
+         },
+         {
+            "id": "speed_knots",
+            "name": "speed_knots",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 100
+            }
+         },
+         {
+            "id": "heading_degrees",
+            "name": "heading_degrees",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 360
+            }
+         },
+         {
+            "id": "depth_meters",
+            "name": "depth_meters",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 12000
+            }
+         },
+         {
+            "id": "water_temperature_c",
+            "name": "water_temperature_c",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": -5,
+               "max": 50
+            }
+         },
+         {
+            "id": "wind_speed_knots",
+            "name": "wind_speed_knots",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 200
+            }
+         },
+         {
+            "id": "wind_direction_degrees",
+            "name": "wind_direction_degrees",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 360
+            }
+         },
+         {
+            "id": "fuel_level_percent",
+            "name": "fuel_level_percent",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 100
+            }
+         },
+         {
+            "id": "battery_level_percent",
+            "name": "battery_level_percent",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 100
+            }
+         },
+         {
+            "id": "created_by",
+            "name": "created_by",
+            "type": "relation",
+            "required": false,
+            "options": {
+               "collectionId": "_pb_users_auth_",
+               "cascadeDelete": false,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "email"
+               ]
+            }
+         }
+      ],
+      "indexes": [
+         "CREATE INDEX idx_sensor_data_vessel ON sensor_data (vessel)",
+         "CREATE INDEX idx_sensor_data_timestamp ON sensor_data (timestamp)"
+      ],
+      "listRule": "@request.auth.id != ''",
+      "viewRule": "@request.auth.id != ''",
+      "createRule": "@request.auth.id != ''",
+      "updateRule": null,
+      "deleteRule": null
+   },
+   {
+      "id": "ai_insights",
+      "name": "ai_insights",
+      "type": "base",
+      "system": false,
+      "schema": [
+         {
+            "id": "vessel",
+            "name": "vessel",
+            "type": "relation",
+            "required": false,
+            "options": {
+               "collectionId": "vessels",
+               "cascadeDelete": true,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "name"
+               ]
+            }
+         },
+         {
+            "id": "insight_type",
+            "name": "insight_type",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 100
+            }
+         },
+         {
+            "id": "title",
+            "name": "title",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 300
+            }
+         },
+         {
+            "id": "description",
+            "name": "description",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 5000
+            }
+         },
+         {
+            "id": "confidence",
+            "name": "confidence",
+            "type": "number",
+            "required": false,
+            "options": {
+               "min": 0,
+               "max": 1
+            }
+         },
+         {
+            "id": "priority",
+            "name": "priority",
+            "type": "select",
+            "required": true,
+            "options": {
+               "maxSelect": 1,
+               "values": [
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+               ]
+            }
+         },
+         {
+            "id": "resolved_at",
+            "name": "resolved_at",
+            "type": "date",
+            "required": false,
+            "options": {}
+         },
+         {
+            "id": "created_by",
+            "name": "created_by",
+            "type": "relation",
+            "required": false,
+            "options": {
+               "collectionId": "_pb_users_auth_",
+               "cascadeDelete": false,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "email"
+               ]
+            }
+         }
+      ],
+      "indexes": [
+         "CREATE INDEX idx_ai_insights_vessel ON ai_insights (vessel)",
+         "CREATE INDEX idx_ai_insights_priority ON ai_insights (priority)"
+      ],
+      "listRule": "@request.auth.id != ''",
+      "viewRule": "@request.auth.id != ''",
+      "createRule": "@request.auth.id != ''",
+      "updateRule": "@request.auth.id != ''",
+      "deleteRule": null
+   },
+   {
+      "id": "waypoints",
+      "name": "waypoints",
+      "type": "base",
+      "system": false,
+      "schema": [
+         {
+            "id": "vessel",
+            "name": "vessel",
+            "type": "relation",
+            "required": true,
+            "options": {
+               "collectionId": "vessels",
+               "cascadeDelete": true,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "name"
+               ]
+            }
+         },
+         {
+            "id": "name",
+            "name": "name",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 200
+            }
+         },
+         {
+            "id": "latitude",
+            "name": "latitude",
+            "type": "number",
+            "required": true,
+            "options": {
+               "min": -90,
+               "max": 90
+            }
+         },
+         {
+            "id": "longitude",
+            "name": "longitude",
+            "type": "number",
+            "required": true,
+            "options": {
+               "min": -180,
+               "max": 180
+            }
+         },
+         {
+            "id": "waypoint_type",
+            "name": "waypoint_type",
+            "type": "text",
+            "required": false,
+            "options": {
+               "min": null,
+               "max": 100
+            }
+         },
+         {
+            "id": "description",
+            "name": "description",
+            "type": "text",
+            "required": false,
+            "options": {
+               "min": null,
+               "max": 1000
+            }
+         },
+         {
+            "id": "created_by",
+            "name": "created_by",
+            "type": "relation",
+            "required": false,
+            "options": {
+               "collectionId": "_pb_users_auth_",
+               "cascadeDelete": false,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "email"
+               ]
+            }
+         }
+      ],
+      "indexes": [
+         "CREATE INDEX idx_waypoints_vessel ON waypoints (vessel)"
+      ],
+      "listRule": "@request.auth.id != ''",
+      "viewRule": "@request.auth.id != ''",
+      "createRule": "@request.auth.id != ''",
+      "updateRule": "@request.auth.id != ''",
+      "deleteRule": "@request.auth.id != ''"
+   },
+   {
+      "id": "system_alerts",
+      "name": "system_alerts",
+      "type": "base",
+      "system": false,
+      "schema": [
+         {
+            "id": "vessel",
+            "name": "vessel",
+            "type": "relation",
+            "required": false,
+            "options": {
+               "collectionId": "vessels",
+               "cascadeDelete": true,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "name"
+               ]
+            }
+         },
+         {
+            "id": "alert_type",
+            "name": "alert_type",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 100
+            }
+         },
+         {
+            "id": "severity",
+            "name": "severity",
+            "type": "select",
+            "required": true,
+            "options": {
+               "maxSelect": 1,
+               "values": [
+                  "info",
+                  "warning",
+                  "error",
+                  "critical"
+               ]
+            }
+         },
+         {
+            "id": "message",
+            "name": "message",
+            "type": "text",
+            "required": true,
+            "options": {
+               "min": 1,
+               "max": 2000
+            }
+         },
+         {
+            "id": "acknowledged",
+            "name": "acknowledged",
+            "type": "bool",
+            "required": false,
+            "options": {}
+         },
+         {
+            "id": "acknowledged_at",
+            "name": "acknowledged_at",
+            "type": "date",
+            "required": false,
+            "options": {}
+         },
+         {
+            "id": "acknowledged_by",
+            "name": "acknowledged_by",
+            "type": "relation",
+            "required": false,
+            "options": {
+               "collectionId": "_pb_users_auth_",
+               "cascadeDelete": false,
+               "minSelect": null,
+               "maxSelect": 1,
+               "displayFields": [
+                  "email"
+               ]
+            }
+         }
+      ],
+      "indexes": [
+         "CREATE INDEX idx_system_alerts_vessel ON system_alerts (vessel)",
+         "CREATE INDEX idx_system_alerts_acknowledged ON system_alerts (acknowledged)"
+      ],
+      "listRule": "@request.auth.id != ''",
+      "viewRule": "@request.auth.id != ''",
+      "createRule": "@request.auth.id != ''",
+      "updateRule": "@request.auth.id != ''",
+      "deleteRule": null
+   }
+]
