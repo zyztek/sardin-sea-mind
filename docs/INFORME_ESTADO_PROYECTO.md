@@ -15,7 +15,8 @@ El proyecto **SARDIN-AI Maritime Intelligence Dashboard** es un sistema avanzado
 | Aspecto | Estado | Comentario |
 |---------|--------|------------|
 | **Frontend (React)** | ✅ 95% | Completamente funcional |
-| **Integración Supabase** | ⏳ 75% | Schema listo, conexión pendiente de validar |
+| **Integración PocketBase** | ✅ 100% | Auth y BDD completamente migrados |
+| **Integración Supabase** | ❌ Deprecated | Reemplazado por PocketBase |
 | **Backend Flask** | ❌ 0% | Solo documentado, no implementado |
 | **Modelos IA** | ❌ 0% | Solo stubs, no hay modelos reales |
 | **PWA/Offline** | ⏳ 70% | Configurado pero no probado |
@@ -27,42 +28,29 @@ El proyecto **SARDIN-AI Maritime Intelligence Dashboard** es un sistema avanzado
 
 ### Lo que ESTÁ implementado
 
-```
+```text
 sardin-sea-mind/
 ├── src/                    # ✅ Frontend React completamente desarrollado
 │   ├── components/         # 78 componentes (UI, dashboard, navigation)
 │   │   ├── dashboard/      # 18 widgets del dashboard marítimo
 │   │   ├── navigation/     # Controles de navegación y mapa
 │   │   ├── ui/             # 49 componentes Shadcn/UI
-│   │   └── auth/           # Autenticación
-│   ├── hooks/              # 7 hooks personalizados (real-time, offline, etc.)
-│   ├── pages/              # 3 páginas principales (Auth, Index, NotFound)
-│   └── contexts/           # Contexto de aplicación
-├── supabase/               # ✅ Migraciones de base de datos listas
-│   └── migrations/         # 2 archivos de migración SQL
+│   │   └── auth/           # Autenticación (vía PocketBase)
+│   ├── hooks/              # 7 hooks personalizados
+│   ├── integrations/       # ✅ Cliente PocketBase configurado
+│   └── contexts/           # Contexto de Auth migrado a PocketBase
 ├── public/                 # ✅ Assets PWA (iconos, manifest)
-└── docs/                   # ⏳ Documentación parcial
-```
+└── docs/                   # ⏳ Documentación en proceso de actualización
+```text
 
 ### Lo que FALTA según FILES.md
 
-```
+```text
 ⚠️ NO IMPLEMENTADO:
-├── backend/                # API REST Flask completa
-│   ├── app/                # Aplicación principal
-│   │   ├── models/         # Modelos ORM (User, Vessel, Prediction, etc.)
-│   │   ├── routes/         # Endpoints API (auth, navigation, AI, etc.)
-│   │   ├── services/       # Lógica de negocio y servicios IA
-│   │   └── utils/          # Utilidades y decoradores
-│   └── ml-model/           # Modelos ML entrenados (.pkl)
-├── docker/                 # Configuración Docker
-│   ├── docker-compose.yml
-│   ├── nginx/
-│   ├── prometheus/
-│   └── grafana/
-├── database/               # Schema SQL adicional
-└── scripts/                # Scripts de automatización
-```
+├── backend/                # API REST Flask completa (opcional con PocketBase)
+├── docker/                 # Configuración Docker (parcialmente en docs)
+└── ml-model/               # Modelos ML entrenados (.pkl)
+```text
 
 ---
 
@@ -77,7 +65,7 @@ sardin-sea-mind/
 | Vite | 5.4.19 | Build tool |
 | Tailwind CSS | 3.4.17 | Estilos |
 | Shadcn/UI | Latest | Componentes UI |
-| Supabase JS | 2.56.1 | Cliente base de datos |
+| PocketBase SDK | 0.22+ | Backend & Auth & DB Realtime |
 | React Query | 5.83.0 | Gestión de estado servidor |
 | Recharts | 2.15.4 | Visualización de datos |
 | PWA Plugin | 1.0.3 | Soporte offline |
@@ -86,23 +74,21 @@ sardin-sea-mind/
 
 | Tecnología | Propósito |
 |------------|-----------|
-| Flask/Python | API REST Backend |
-| SQLAlchemy | ORM para PostgreSQL |
+| Flask/Python | API REST Backend (Evaluando necesidad) |
+| Supabase | Deprecated (Migrado a PocketBase) |
 | Celery | Tareas asíncronas |
 | TensorFlow/Scikit-learn | Modelos ML |
-| Docker | Contenedorización |
-| Nginx | Reverse proxy |
-| Prometheus + Grafana | Monitoreo |
 
 ---
 
-## 🗄️ BASE DE DATOS (SUPABASE)
+## 🗄️ BASE DE DATOS (POCKETBASE)
 
-### Tablas Implementadas (via Migrations)
+### Colecciones Implementadas
 
-| Tabla | Estado | Descripción |
-|-------|--------|-------------|
-| `profiles` | ✅ | Perfiles de usuario con roles marítimos |
+| Colección | Estado | Descripción |
+|-----------|--------|-------------|
+| `users` | ✅ | Usuarios del sistema (auth) |
+| `profiles` | ✅ | Perfiles extendidos con roles marítimos |
 | `vessels` | ✅ | Información de embarcaciones |
 | `sensor_data` | ✅ | Datos de sensores en tiempo real |
 | `ai_insights` | ✅ | Predicciones y alertas IA |

@@ -1,59 +1,92 @@
-# 🚢 SARDIN-AI Maritime Intelligence Dashboard
+<div align="center">
 
-<p align="center">
-  <img src="public/pwa-512x512.png" alt="SARDIN-AI Logo" width="128" height="128">
-</p>
+![SARDIN-AI Header](https://capsule-render.vercel.app/api?type=waving&color=0ea5e9&height=300&section=header&text=SARDIN-AI&fontSize=90&animation=fadeIn&fontAlignY=38&desc=Autonomous%20Maritime%20Intelligence%20System&descAlignY=51&descAlign=50)
 
-<p align="center">
-  <strong>Sistema Avanzado de Inteligencia Marítima con IA</strong><br>
-  Dashboard profesional para navegación, operaciones pesqueras y gestión de flotas.
-</p>
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![PocketBase](https://img.shields.io/badge/PocketBase-B8DBE4?style=for-the-badge&logo=pocketbase&logoColor=000)](https://pocketbase.io/)
+[![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Vite](https://img.shields.io/badge/Vite-B33030?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/React-18.3-blue?logo=react" alt="React">
-  <img src="https://img.shields.io/badge/TypeScript-5.8-blue?logo=typescript" alt="TypeScript">
-  <img src="https://img.shields.io/badge/PocketBase-0.22-green?logo=pocketbase" alt="PocketBase">
-  <img src="https://img.shields.io/badge/PWA-Ready-purple" alt="PWA">
-</p>
+[**Explorar Docs**](./docs) · [**Ver Demo**](https://sardin-ai.demo) · [**Reportar Bug**](../../issues/new) · [**Solicitar Feature**](../../issues/new)
+
+</div>
 
 ---
 
-## 🌊 Características
+## 🌊 Visión General
 
-### 📍 Inteligencia Marítima
+**SARDIN-AI** es una plataforma de inteligencia marítima de próxima generación, diseñada para empoderar a cooperativas pesqueras con tecnología de punta. Combina **Inteligencia Artificial**, **Análisis de Datos en Tiempo Real** y **IoT** para optimizar la pesca sostenible.
 
-- **Navegación en tiempo real** - GPS, waypoints, optimización de rutas
-- **Insights con IA** - Predicciones de zonas de pesca, análisis meteorológico
-- **Integración de sensores** - Monitoreo de sistemas, condiciones ambientales
-- **Gestión multi-embarcación** - Seguimiento y coordinación de flotas
+> **Estado Actual:** 🟢 **V 1.0.0 - STABLE (PocketBase Migration Complete)**
 
-### 🔧 Capacidades Avanzadas
+### 🤖 Sistema Multi-Agente Autónomo
 
-- **Modo offline** - Operación sin conectividad
-- **PWA** - Instalable en desktop y móvil
-- **Sincronización en tiempo real** - Datos actualizados instantáneamente
-- **Roles de acceso** - Capitán, Ingeniero, Navegante, Observador
+El corazón de SARDIN-AI late gracias a 7 agentes especializados:
 
-### 🔐 Seguridad
+```mermaid
+graph TD
+    User[👤 Usuario] --> TheBridge[🌉 The Bridge Dashboard]
+    TheBridge --> Orchestrator[🧠 Orquestador Central]
+    
+    subgraph "Core Agents Cycle"
+    Orchestrator --> FishingAI[🐟 Fishing AI]
+    Orchestrator --> NavAI[🧭 Navigation AI]
+    Orchestrator --> WeatherAI[⛈️ Weather AI]
+    Orchestrator --> MaintAI[🔧 Maintenance AI]
+    end
+    
+    subgraph "Strategic Agents"
+    Orchestrator --> MarketAI[💰 Market AI]
+    Orchestrator --> SecurityAI[🛡️ Security AI]
+    Orchestrator --> FleetAI[⚓ Fleet AI]
+    end
 
-- **Self-hosted** - Tus datos en tu servidor
-- **Autenticación segura** - Email/Password + OAuth
-- **Control de acceso** - Permisos por rol
-- **Backups automáticos** - Recuperación de datos
+    FishingAI -- "Predicción de Zonas" --> TheBridge
+    NavAI -- "Rutas Óptimas" --> TheBridge
+    WeatherAI -- "Alertas Riesgo" --> TheBridge
+```
 
 ---
 
-## 🚀 Inicio Rápido
+## 🚀 Características Principales
 
-### Requisitos
+| Módulo | Descripción | Estado |
+|:---|:---|:---:|
+| **🗺️ Maritime Map** | Visualización geoespacial con capas de datos oceanográficos (Temp, Clorofila). | ✅ |
+| **🎣 Fishing Insights** | Predicción de zonas de pesca basadas en ML y datos históricos. | ✅ |
+| **📊 Analytics Dashboard** | Métricas en tiempo real de consumo, capturas y rendimiento. | ✅ |
+| **🔐 Auth & Security** | Sistema robusto de roles y permisos gestionado por PocketBase. | ✅ |
+| **📱 PWA Ready** | Funciona offline y se instala en dispositivos móviles. | ✅ |
+| **🎮 Gamification** | (WIP) Sistema de logros y niveles para incentivar buenas prácticas. | 🚧 |
+
+---
+
+## 🛠️ Stack Tecnológico
+
+SARDIN-AI está construido sobre hombros de gigantes, utilizando un stack moderno, performante y totalmente Open Source.
+
+- **Frontend:** React 18, TypeScript, Vite, TailwindCSS, Framer Motion.
+- **Backend:** PocketBase (SQLite + Realtime + Auth).
+- **Mapas:** Leaflet, React-Leaflet, OpenSeaMap.
+- **Data Science:** TensorFlow.js (Futuro), Simple-Statistics.
+- **DevOps:** Docker, Github Actions, Dokploy.
+
+---
+
+## ⚡ Inicio Rápido
+
+### Prerrequisitos
 
 - Node.js 18+
-- PocketBase (ver [instalación](#instalar-pocketbase))
+- Docker (Opcional, recomendado para backend)
 
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <TU_REPO_URL>
+git clone https://github.com/zyztek/sardin-sea-mind.git
 cd sardin-sea-mind
 ```
 
@@ -63,220 +96,68 @@ cd sardin-sea-mind
 npm install
 ```
 
-### 3. Instalar PocketBase
+### 3. Iniciar Backend (PocketBase)
 
-**Windows (PowerShell):**
-
-```powershell
-# Descargar
-Invoke-WebRequest -Uri "https://github.com/pocketbase/pocketbase/releases/download/v0.22.20/pocketbase_0.22.20_windows_amd64.zip" -OutFile "pb.zip"
-Expand-Archive pb.zip -DestinationPath pocketbase-server
-cd pocketbase-server
-
-# Ejecutar
-.\pocketbase.exe serve
-```
-
-**Linux/macOS:**
+Si tienes Docker:
 
 ```bash
-# Descargar
-wget https://github.com/pocketbase/pocketbase/releases/download/v0.22.20/pocketbase_0.22.20_linux_amd64.zip
-unzip pocketbase_*.zip -d pocketbase-server
-cd pocketbase-server
-
-# Ejecutar
-./pocketbase serve
+docker-compose up -d pocketbase
 ```
 
-### 4. Configurar PocketBase
+*O descarga el ejecutable en `./pocketbase` y ejecuta `./pocketbase serve`*
 
-1. Abrir <http://localhost:8090/_/>
-2. Crear cuenta de administrador
-3. Ir a **Settings** > **Import collections**
-4. Pegar contenido de `pocketbase/pb_schema.json`
-5. Click **Import**
-
-### 5. Configurar variables de entorno
-
-```bash
-cp .env.example .env
-# Editar .env si es necesario
-```
-
-### 6. Iniciar desarrollo
+### 4. Iniciar Frontend
 
 ```bash
 npm run dev
 ```
 
-Abrir <http://localhost:8080> en el navegador.
-
----
-
-## 🏗️ Arquitectura
-
-```
-┌─────────────────────────────────────────────────┐
-│                    Frontend                      │
-│          React + TypeScript + Tailwind           │
-│                                                  │
-│  ┌─────────────┐  ┌─────────────┐  ┌──────────┐ │
-│  │  Dashboard  │  │  Components │  │   Hooks  │ │
-│  └─────────────┘  └─────────────┘  └──────────┘ │
-│                         │                        │
-│                         ▼                        │
-│              ┌───────────────────┐               │
-│              │ PocketBase Client │               │
-│              └─────────┬─────────┘               │
-└────────────────────────┼─────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────┐
-│                   PocketBase                     │
-│              (Self-hosted Backend)               │
-│                                                  │
-│  ┌─────────┐  ┌───────────┐  ┌───────────────┐  │
-│  │  Auth   │  │  Database │  │   Realtime    │  │
-│  │ (OAuth) │  │  (SQLite) │  │ (WebSockets)  │  │
-│  └─────────┘  └───────────┘  └───────────────┘  │
-└─────────────────────────────────────────────────┘
-```
-
----
-
-## 📦 Stack Tecnológico
-
-| Capa | Tecnología |
-|------|------------|
-| **Frontend** | React 18, TypeScript, Vite |
-| **Estilos** | Tailwind CSS, Shadcn/UI |
-| **Estado** | React Query, Zustand |
-| **Backend** | PocketBase (Go + SQLite) |
-| **Autenticación** | PocketBase Auth |
-| **Realtime** | PocketBase Subscriptions |
-| **PWA** | Vite PWA Plugin |
-
----
-
-## 🔧 Comandos
-
-```bash
-# Desarrollo
-npm run dev
-
-# Build de producción
-npm run build
-
-# Preview del build
-npm run preview
-
-# Lint
-npm run lint
-```
-
----
-
-## 🚀 Despliegue en Producción
-
-### Con Dokploy (Recomendado)
-
-Ver guía completa: [docs/DEPLOY_DOKPLOY.md](docs/DEPLOY_DOKPLOY.md)
-
-```bash
-# 1. Instalar Dokploy en tu VPS
-curl -sSL https://dokploy.com/install.sh | sh
-
-# 2. Acceder al panel y configurar servicios
-# 3. Desplegar desde GitHub o Docker
-```
-
-### Con Docker Compose
-
-```bash
-# Desarrollo
-docker-compose up -d
-
-# Producción (con Traefik + SSL)
-docker-compose --profile production up -d
-```
-
----
-
-## 👥 Roles de Usuario
-
-| Rol | Acceso |
-|-----|--------|
-| **Capitán** | Control total del sistema |
-| **Ingeniero** | Diagnósticos y monitoreo de equipos |
-| **Navegante** | Planificación de rutas |
-| **Observador** | Solo lectura (entrenamiento) |
-
----
-
-## 📱 PWA
-
-La aplicación es una Progressive Web App:
-
-- ✅ Instalable en desktop y móvil
-- ✅ Funciona offline
-- ✅ Sincronización automática
-- ✅ Notificaciones push (configurables)
+Visita `http://localhost:5173` y sumérgete en el océano de datos.
 
 ---
 
 ## 📂 Estructura del Proyecto
 
-```
+```bash
 sardin-sea-mind/
-├── src/
-│   ├── components/        # Componentes React
-│   │   ├── dashboard/     # Widgets del dashboard
-│   │   ├── navigation/    # Controles de navegación
-│   │   └── ui/            # Componentes Shadcn/UI
-│   ├── contexts/          # Contextos React
-│   ├── hooks/             # Hooks personalizados
-│   ├── integrations/
-│   │   └── pocketbase/    # Cliente y servicios PocketBase
-│   ├── pages/             # Páginas de la app
-│   └── types/             # Definiciones TypeScript
-├── pocketbase/            # Configuración del backend
-│   ├── pb_schema.json     # Esquema de colecciones
-│   └── Dockerfile         # Imagen Docker
-├── docs/                  # Documentación
-├── docker-compose.yml     # Orquestación Docker
-├── Dockerfile             # Build del frontend
-└── nginx.conf             # Configuración del servidor
+├── 📂 .github/         # CI/CD y Templates de Comunidad
+├── 📂 .devcontainer/   # Configuración de Codespaces
+├── 📂 docs/            # Documentación Técnica y Brainstorms
+├── 📂 pocketbase/      # Configuración del Backend y Schema
+├── 📂 src/
+│   ├── 📂 agents/      # Lógica del Sistema Multi-Agente
+│   ├── 📂 components/  # Biblioteca de Componentes UI
+│   ├── 📂 hooks/       # Lógica React Reutilizable
+│   ├── 📂 services/    # Integración con APIs Externas
+│   └── 📂 pages/       # Vistas de la Aplicación
+└── 📄 docker-compose.yml
 ```
 
 ---
 
-## 📚 Documentación
+## 🤝 Contribución
 
-- [Guía de Despliegue con Dokploy](docs/DEPLOY_DOKPLOY.md)
-- [Decisión de Arquitectura](docs/DECISION_ARQUITECTURA.md)
-- [Instalación de PocketBase](pocketbase/README.md)
-- [Estado del Proyecto](docs/INFORME_ESTADO_PROYECTO.md)
+¡Queremos tu ayuda para limpiar los océanos y optimizar la pesca!
+Por favor lee nuestro [CONTRIBUTING.md](./CONTRIBUTING.md) para detalles de nuestro código de conducta y el proceso para enviar Pull Requests.
 
----
-
-## 🤝 Contribuir
-
-1. Fork el repositorio
-2. Crear rama: `git checkout -b feature/nueva-funcionalidad`
-3. Commit: `git commit -m 'Agregar nueva funcionalidad'`
-4. Push: `git push origin feature/nueva-funcionalidad`
-5. Crear Pull Request
+1. Haz un **Fork** del proyecto.
+2. Crea tu rama de feature (`git checkout -b feature/AmazingFeature`).
+3. Haz **Commit** de tus cambios (`git commit -m 'Add some AmazingFeature'`).
+4. Haz **Push** a la rama (`git push origin feature/AmazingFeature`).
+5. Abre un **Pull Request**.
 
 ---
 
-## 📄 Licencia
+## 📜 Licencia
 
-MIT © SARDIN-AI
+Distribuido bajo la licencia MIT. Ver `LICENSE` para más información.
 
 ---
 
-<p align="center">
-  <strong>SARDIN-AI</strong> - Sistema de Inteligencia Marítima<br>
-  <em>Navegando con IA hacia aguas más seguras</em>
-</p>
+<div align="center">
+
+**Hecho con ❤️ y 🐟 por el equipo SARDIN-AI**
+
+[Reportar Bug](../../issues) • [Solicitar Feature](../../issues) • [Roadmap](./docs/ROADMAP.md)
+
+</div>

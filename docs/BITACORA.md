@@ -4,7 +4,7 @@
 
 ---
 
-# 📋 PROPÓSITO
+## 📋 PROPÓSITO
 
 Esta bitácora registra cronológicamente todas las acciones, decisiones y cambios en el proyecto SARDIN-AI. Sirve como:
 
@@ -16,7 +16,7 @@ Esta bitácora registra cronológicamente todas las acciones, decisiones y cambi
 
 ---
 
-# 📅 REGISTROS
+## 📅 REGISTROS
 
 ## Diciembre 2024
 
@@ -198,7 +198,7 @@ src/hooks/useWeatherData.ts
 
 ---
 
-# 📊 ESTADÍSTICAS ACUMULADAS
+## 📊 ESTADÍSTICAS ACUMULADAS
 
 ## Código
 
@@ -229,7 +229,7 @@ src/hooks/useWeatherData.ts
 
 ---
 
-# 📝 PLANTILLA DE REGISTRO
+## 📝 PLANTILLA DE REGISTRO
 
 ```markdown
 ### YYYY-MM-DD | Título del Cambio
@@ -258,7 +258,7 @@ src/hooks/useWeatherData.ts
 
 ---
 
-# 🔮 PRÓXIMOS REGISTROS ESPERADOS
+## 🔮 PRÓXIMOS REGISTROS ESPERADOS
 
 | Fecha Estimada | Evento | Prioridad |
 |----------------|--------|-----------|

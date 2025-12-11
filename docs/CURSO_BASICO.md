@@ -4,7 +4,7 @@
 
 ---
 
-# 📋 Información del Curso
+## 📋 Información del Curso
 
 - **Nivel:** Principiante / Intermedio
 - **Duración:** 4 Módulos (2 horas aprox.)
@@ -13,9 +13,9 @@
 
 ---
 
-# 🗺️ Temario del Curso
+## 🗺️ Temario del Curso
 
-## Módulo 1: Fundamentos de SARDIN-AI
+### Módulo 1: Fundamentos de SARDIN-AI
 
 **Duración: 20 min**
 
@@ -31,7 +31,7 @@
    - Tour por el Dashboard
    - Configuración de perfil de embarcación
 
-## Módulo 2: Interpretando los Agentes IA
+### Módulo 2: Interpretando los Agentes IA
 
 **Duración: 40 min**
 
@@ -48,7 +48,7 @@
    - Cálculo de rutas optimizadas
    - Estimación de combustible
 
-## Módulo 3: Operaciones en el Mar (Offline)
+### Módulo 3: Operaciones en el Mar (Offline)
 
 **Duración: 30 min**
 
@@ -63,7 +63,7 @@
    - Vuelta a puerto
    - Subida automática de datos
 
-## Módulo 4: Mantenimiento y Gestión
+### Módulo 4: Mantenimiento y Gestión
 
 **Duración: 30 min**
 
@@ -80,7 +80,7 @@
 
 ---
 
-# 🛠️ Materiales Necesarios
+## 🛠️ Materiales Necesarios
 
 - Computadora portátil o Tablet
 - Conexión a internet (para instalación)
@@ -88,7 +88,7 @@
 
 ---
 
-# 📝 Examen Final (Simulado)
+## 📝 Examen Final (Simulado)
 
 1. ¿Cuál es el porcentaje mínimo de probabilidad recomendado por FishingAI para iniciar un viaje?
 2. ¿Qué acción toma NavigationAI si WeatherAI detecta una tormenta en la ruta?
@@ -97,9 +97,9 @@
 
 ---
 
-# 🚀 Proyecto Práctico
+## 🚀 Proyecto Práctico
 
-**"Tu Primera Expedición Digital"**
+### "Tu Primera Expedición Digital"
 
 1. Configura tu perfil de barco "El Aventurero".
 2. Usa WeatherAI para elegir la mejor ventana de salida este fin de semana.

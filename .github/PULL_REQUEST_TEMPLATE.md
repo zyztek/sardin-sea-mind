@@ -1,34 +1,25 @@
-## 📝 Descripción
+## Description
 
-<!-- Describe los cambios que estás haciendo -->
+Briefly describe the changes you've made. usage of "Fixes #issue" is encouraged.
 
-## 🔗 Issue Relacionado
+## Type of Change
 
-<!-- Link al issue si existe: Closes #123 -->
+- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
+- [ ] ✨ New feature (non-breaking change which adds functionality)
+- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] 📝 Documentation update
 
-## 🧪 Tipo de Cambio
+## Checklist
 
-- [ ] 🐛 Bug fix
-- [ ] ✨ Nueva feature
-- [ ] 📚 Documentación
-- [ ] 🎨 Estilo/UI
-- [ ] ♻️ Refactor
-- [ ] 🧪 Tests
-- [ ] 🔧 Configuración
+- [ ] My code follows the style guidelines of this project
+- [ ] I have performed a self-review of my own code
+- [ ] I have commented my code, particularly in hard-to-understand areas
+- [ ] I have made corresponding changes to the documentation
+- [ ] My changes generate no new warnings
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] New and existing unit tests pass locally with my changes
 
-## ✅ Checklist
+## Screenshots (if applicable)
 
-- [ ] Mi código sigue el estilo del proyecto
-- [ ] He agregado tests (si aplica)
-- [ ] Todos los tests pasan (`npm run test:run`)
-- [ ] He actualizado la documentación (si aplica)
-- [ ] El build funciona (`npm run build`)
-- [ ] He revisado mi código antes de enviar
-
-## 📸 Screenshots/Videos
-
-<!-- Si hay cambios visuales, agrega capturas -->
-
-## 📋 Notas Adicionales
-
-<!-- Cualquier información extra para los revisores -->
+| Before | After |
+|Data...|Data...|

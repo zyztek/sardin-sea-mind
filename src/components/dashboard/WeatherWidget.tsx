@@ -9,26 +9,28 @@ import {
   Eye,
   Compass,
   Waves,
-  RefreshCw
+  RefreshCw,
+  Loader2
 } from "lucide-react";
-import { SensorData } from "@/types/maritime";
+import { MarineWeather } from "@/services/OpenMeteoService";
 
 interface WeatherWidgetProps {
   className?: string;
-  data?: SensorData;
+  data: MarineWeather | null;
+  loading?: boolean;
 }
 
-export function WeatherWidget({ className = "", data }: WeatherWidgetProps) {
+export function WeatherWidget({ className = "", data, loading = false }: WeatherWidgetProps) {
   // Use real data or defaults
-  const temperature = data?.water_temperature_c || 0; // Using water temp as proxy if air temp missing, or 0
-  const windSpeed = data?.wind_speed_knots || 0;
-  const windDirection = data?.wind_direction_degrees || 0;
+  const temperature = data?.temperature || 0;
+  const windSpeed = data?.wind_speed || 0;
+  const windDirection = data?.wind_direction || 0;
+  const waveHeight = data?.wave_height || 0;
 
-  // Simulated derived values for now (since SensorData might not have all weather fields)
+  // Simulated derived values for now (API defaults)
   const visibility = 10;
   const humidity = 75;
   const pressure = 1013;
-  const waveHeight = 1.2;
 
   const getConditionIcon = (temp: number) => {
     if (temp > 20) return Sun;
@@ -58,7 +60,7 @@ export function WeatherWidget({ className = "", data }: WeatherWidgetProps) {
   const WeatherIcon = getConditionIcon(temperature);
   const seaCondition = getSeaCondition(waveHeight);
 
-  // Mock forecast for UI completeness
+  // Mock forecast for UI completeness (Future: integrate forecast API)
   const forecast = [
     { time: '+3h', condition: '☁️', temp: temperature - 1, wind: windSpeed + 2 },
     { time: '+6h', condition: '🌤️', temp: temperature - 2, wind: windSpeed + 5 },
@@ -72,7 +74,10 @@ export function WeatherWidget({ className = "", data }: WeatherWidgetProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center space-x-2">
             <WeatherIcon className={`h-5 w-5 ${getConditionColor(temperature)}`} />
-            <span>Condiciones Meteorológicas</span>
+            <span className="flex items-center gap-2">
+              Meteorología
+              {loading && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
+            </span>
           </CardTitle>
           <Badge variant="outline" className={seaCondition.color}>
             Mar {seaCondition.label}
@@ -172,7 +177,7 @@ export function WeatherWidget({ className = "", data }: WeatherWidgetProps) {
 
         {/* Last Update */}
         <div className="pt-2 border-t text-xs text-muted-foreground text-center">
-          Actualizado: {data?.timestamp ? new Date(data.timestamp).toLocaleTimeString() : 'Esperando datos...'}
+          Actualizado: {data?.timestamp ? new Date(data.timestamp).toLocaleTimeString() : 'N/A'}
         </div>
       </CardContent>
     </Card>

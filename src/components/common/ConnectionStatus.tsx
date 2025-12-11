@@ -1,56 +1,57 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Wifi, WifiOff, Database, Satellite } from 'lucide-react';
-import { useOfflineMode } from '@/hooks/useOfflineMode';
+import { Badge } from "@/components/ui/badge";
+import { Wifi, WifiOff, RefreshCw, Database } from "lucide-react";
+import { useSyncManager } from '@/hooks/useSyncManager';
 
-export const ConnectionStatus: React.FC = () => {
-  const { isOnline, offlineData } = useOfflineMode();
+interface ConnectionStatusProps {
+  isOnline?: boolean; // Deprecated prop kept for compat
+  className?: string; // Allow positioning overrides
+}
+
+export const ConnectionStatus: React.FC<ConnectionStatusProps> = ({ className = "" }) => {
+  const { isOnline, pendingItems, isSyncing, syncNow } = useSyncManager();
+
+  if (isSyncing) {
+    return (
+      <Badge variant="outline" className={`bg-amber-100/50 text-amber-700 border-amber-300 animate-pulse ${className}`}>
+        <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
+        Sincronizando ({pendingItems})...
+      </Badge>
+    );
+  }
+
+  if (!isOnline) {
+    return (
+      <Badge variant="destructive" className={`${className}`}>
+        <WifiOff className="w-3 h-3 mr-1" />
+        Offline
+        {pendingItems > 0 && (
+          <span className="ml-2 pl-2 border-l border-white/20 flex items-center">
+            <Database className="w-3 h-3 mr-1" />
+            {pendingItems}
+          </span>
+        )}
+      </Badge>
+    );
+  }
 
   return (
-    <Card className="maritime-panel">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2">
-              {isOnline ? (
-                <Wifi className="w-4 h-4 text-emerald-500" />
-              ) : (
-                <WifiOff className="w-4 h-4 text-red-500" />
-              )}
-              <Badge variant={isOnline ? "default" : "destructive"}>
-                {isOnline ? "Online" : "Offline"}
-              </Badge>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Database className="w-4 h-4 text-maritime-primary" />
-              <span className="text-sm text-muted-foreground">
-                DB: Connected
-              </span>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Satellite className="w-4 h-4 text-ai-neural" />
-              <span className="text-sm text-muted-foreground">
-                GPS: Active
-              </span>
-            </div>
-          </div>
-          
-          {!isOnline && offlineData.cachedData.length > 0 && (
-            <Badge variant="secondary">
-              {offlineData.cachedData.length} items cached
+    <div className={`flex items-center space-x-2 ${className}`}>
+        {pendingItems > 0 && (
+            <Badge 
+                variant="outline" 
+                className="bg-blue-100/50 text-blue-700 border-blue-300 cursor-pointer hover:bg-blue-200/50"
+                onClick={syncNow}
+                title="Click para forzar sincronización"
+            >
+                <Database className="w-3 h-3 mr-1" />
+                {pendingItems} Pendientes
             </Badge>
-          )}
-        </div>
-        
-        {offlineData.lastSync && (
-          <div className="mt-2 text-xs text-muted-foreground">
-            Last sync: {new Date(offlineData.lastSync).toLocaleString()}
-          </div>
         )}
-      </CardContent>
-    </Card>
+        <Badge variant="outline" className="bg-emerald-100/10 text-emerald-600 border-emerald-500/20 backdrop-blur-md">
+            <Wifi className="w-3 h-3 mr-1" />
+            Online
+        </Badge>
+    </div>
   );
 };

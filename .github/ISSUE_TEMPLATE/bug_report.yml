@@ -1,0 +1,53 @@
+name: Bug Report
+description: Create a report to help us improve SARDIN-AI
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: "When I click the 'Sonar' button, the application crashes..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser are you using? (Chrome, Firefox, Safari, Edge)
+      placeholder: Chrome 120.0
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How critical is this bug?
+      options:
+        - Low (Cosmetic)
+        - Medium (Annoying but functional)
+        - High (Feature broken)
+        - Critical (App crashes/Data loss)
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console Logs
+      description: Please add any relevant logs from the browser console.
+      render: shell

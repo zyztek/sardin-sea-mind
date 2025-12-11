@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { MaritimeHeader } from '@/components/layout/MaritimeHeader';
@@ -25,16 +24,23 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useMaritimeDatabase } from '@/hooks/useMaritimeDatabase';
 import { useRealTimeData } from '@/hooks/useRealTimeData';
 import { useOfflineMode } from '@/hooks/useOfflineMode';
-import { 
-  Navigation, 
-  BarChart3, 
-  Activity, 
-  FileText, 
-  TestTube, 
+import { useGeolocation } from '@/hooks/useGeolocation';
+import { useRealWeather } from '@/hooks/useRealWeather';
+import { FishingPredictionService } from '@/services/FishingPredictionService';
+import { WeatherWidget } from '@/components/dashboard/WeatherWidget';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Navigation,
+  BarChart3,
+  Activity,
+  FileText,
+  TestTube,
   Settings,
   Ship,
+  Trophy,
   Brain
 } from 'lucide-react';
+import { ProfileGamified } from '@/components/gamification/ProfileGamified';
 
 export const MaritimeDashboard: React.FC = () => {
   const { profile, isAuthenticated } = useAuth();
@@ -48,6 +54,23 @@ export const MaritimeDashboard: React.FC = () => {
   // Enable real-time updates
   useRealTimeData();
   const { isOnline } = useOfflineMode();
+  const { coordinates: gpsCoordinates, error: gpsError } = useGeolocation();
+  const { weather, loading: weatherLoading } = useRealWeather(gpsCoordinates);
+  const { toast } = useToast();
+
+  // Position fallback (Default: Boston Harbor for demo / Puerto Principal for dev)
+  const defaultPosition = { lat: -23.5505, lng: -46.6333 };
+  const currentPosition = gpsCoordinates || defaultPosition;
+
+  useEffect(() => {
+    if (gpsError) {
+      toast({
+        title: "GPS Signal Lost / Unavailable",
+        description: "Using estimated position. Please enable location services.",
+        variant: "destructive",
+      });
+    }
+  }, [gpsError, toast]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVessel, setSelectedVessel] = useState<string | undefined>();
@@ -100,8 +123,27 @@ export const MaritimeDashboard: React.FC = () => {
   const systemStatus = systemAlerts?.some(alert => alert.severity === 'critical') ? 'critical' : 'operational';
   const aiStatus = aiInsights?.length ? 'active' : 'learning';
 
-  // Convert database insights to component format
-  const formattedInsights = aiInsights?.map(insight => ({
+  // Calculate real-time prediction
+  const prediction = weather ? FishingPredictionService.analyze(weather) : null;
+
+  // Transform prediction to AIInsight format
+  const realTimeInsight = prediction ? {
+    id: 'realtime-1',
+    type: (prediction.label === 'Peligrosa' ? 'alert' : 'prediction') as any,
+    title: `Pesca: ${prediction.label}`,
+    description: prediction.recommendation,
+    confidence: prediction.score,
+    priority: (prediction.label === 'Peligrosa' ? 'critical' : 'high') as any,
+    timestamp: new Date().toLocaleTimeString(),
+    data: {
+      "Especies": prediction.species.join(", ") || "General",
+      "Seguridad": prediction.safetyAlert || "Seguro",
+      "Score": `${prediction.score}/100`
+    }
+  } : null;
+
+  // Convert database insights to component format & MERGE with real-time
+  const dbInsights = aiInsights?.map(insight => ({
     id: insight.id,
     type: insight.insight_type as 'prediction' | 'recommendation' | 'alert' | 'optimization',
     title: insight.title,
@@ -111,31 +153,17 @@ export const MaritimeDashboard: React.FC = () => {
     timestamp: new Date(insight.created_at).toLocaleString(),
   })) || [];
 
-  // Convert sensor data to metrics format
-  const currentMetrics = latestSensorData ? {
-    speed: latestSensorData.speed_knots || 0,
-    heading: latestSensorData.heading_degrees || 0,
-    position: {
-      lat: latestSensorData.latitude || 0,
-      lng: latestSensorData.longitude || 0,
-    },
-    depth: latestSensorData.depth_meters || 0,
-    temperature: latestSensorData.water_temperature_c || 0,
-    wind: {
-      speed: latestSensorData.wind_speed_knots || 0,
-      direction: latestSensorData.wind_direction_degrees || 0,
-    },
-    fuel: latestSensorData.fuel_level_percent || 0,
-    battery: latestSensorData.battery_level_percent || 0,
-  } : {
-    speed: 12.5,
-    heading: 45,
-    position: { lat: -23.5505, lng: -46.6333 },
-    depth: 45.2,
-    temperature: 18.5,
-    wind: { speed: 8.3, direction: 220 },
-    fuel: 78.5,
-    battery: 92.0,
+  const displayInsights = realTimeInsight ? [realTimeInsight, ...dbInsights] : dbInsights;
+
+  // Fallback if no real insights and no DB insights
+  const fallbackInsight = {
+    id: '1',
+    type: 'prediction' as const,
+    title: 'Esperando datos de clima...',
+    description: 'Calculando predicción de pesca basada en condiciones reales.',
+    confidence: 0,
+    priority: 'low' as const,
+    timestamp: new Date().toLocaleString()
   };
 
   return (
@@ -145,165 +173,167 @@ export const MaritimeDashboard: React.FC = () => {
           <ConnectionStatus />
         </div>
         <div className="container mx-auto p-6 space-y-6">
-          <MaritimeHeader 
+          <MaritimeHeader
             isConnected={isConnected && isOnline}
             systemStatus={systemStatus}
             aiStatus={aiStatus}
           />
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="maritime-panel">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Ship className="w-5 h-5 text-maritime-primary" />
-                Welcome aboard, {profile?.maritime_role || 'Officer'}!
-              </CardTitle>
-              <CardDescription>
-                Maritime AI Intelligence System - Active Vessel: {vessels?.find(v => v.id === selectedVessel)?.name || 'SARDIN Explorer'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                <Badge variant={isConnected ? 'default' : 'destructive'}>
-                  {isConnected ? 'Systems Online' : 'Systems Offline'}
-                </Badge>
-                <Badge variant="outline" className="text-ai-neural border-ai-neural/30">
-                  <Brain className="w-3 h-3 mr-1" />
-                  AI Active
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+            <Card className="maritime-panel">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Ship className="w-5 h-5 text-maritime-primary" />
+                  Welcome aboard, {profile?.maritime_role || 'Officer'}!
+                </CardTitle>
+                <CardDescription>
+                  Maritime AI Intelligence System - Active Vessel: {vessels?.find(v => v.id === selectedVessel)?.name || 'SARDIN Explorer'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <Badge variant={isConnected ? 'default' : 'destructive'}>
+                    {isConnected ? 'Systems Online' : 'Systems Offline'}
+                  </Badge>
+                  <Badge variant="outline" className="text-ai-neural border-ai-neural/30">
+                    <Brain className="w-3 h-3 mr-1" />
+                    AI Active
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
 
-          <div className="lg:col-span-3">
-            <ErrorBoundary>
-              <MetricsGrid />
-            </ErrorBoundary>
+            <div className="lg:col-span-3">
+              <ErrorBoundary>
+                <MetricsGrid />
+              </ErrorBoundary>
+            </div>
           </div>
-        </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-7 lg:grid-cols-7">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="navigation">
-              <Navigation className="w-4 h-4 mr-2" />
-              Navigation
-            </TabsTrigger>
-            <TabsTrigger value="analytics">
-              <BarChart3 className="w-4 h-4 mr-2" />
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="realtime">
-              <Activity className="w-4 h-4 mr-2" />
-              Real Time
-            </TabsTrigger>
-            <TabsTrigger value="reports">
-              <FileText className="w-4 h-4 mr-2" />
-              Reports
-            </TabsTrigger>
-            <TabsTrigger value="testing">
-              <TestTube className="w-4 h-4 mr-2" />
-              Testing
-            </TabsTrigger>
-            <TabsTrigger value="settings">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </TabsTrigger>
-          </TabsList>
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-8 h-auto gap-2">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="navigation">
+                <Navigation className="w-4 h-4 mr-2 hidden md:block" />
+                Nav
+              </TabsTrigger>
+              <TabsTrigger value="analytics">
+                <BarChart3 className="w-4 h-4 mr-2 hidden md:block" />
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="realtime">
+                <Activity className="w-4 h-4 mr-2 hidden md:block" />
+                Real Time
+              </TabsTrigger>
+              <TabsTrigger value="reports">
+                <FileText className="w-4 h-4 mr-2 hidden md:block" />
+                Reports
+              </TabsTrigger>
+              <TabsTrigger value="testing">
+                <TestTube className="w-4 h-4 mr-2 hidden md:block" />
+                Testing
+              </TabsTrigger>
+              <TabsTrigger value="settings">
+                <Settings className="w-4 h-4 mr-2 hidden md:block" />
+                Settings
+              </TabsTrigger>
+              <TabsTrigger value="profile">
+                <Trophy className="w-4 h-4 mr-2 hidden md:block" />
+                GameSea
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-              <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div className="lg:col-span-3">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <ErrorBoundary>
+                      <AIInsightCard
+                        insight={displayInsights[0] || fallbackInsight}
+                      />
+                    </ErrorBoundary>
+                    <ErrorBoundary>
+                      <AlertsPanel />
+                    </ErrorBoundary>
+                  </div>
+                  <div className="mt-6">
+                    <ErrorBoundary>
+                      <WeatherWidget data={weather} loading={weatherLoading} />
+                    </ErrorBoundary>
+                  </div>
+                </div>
+                <div>
                   <ErrorBoundary>
-                    <AIInsightCard 
-                      insight={formattedInsights[0] || {
-                        id: '1',
-                        type: 'prediction' as const,
-                        title: 'Weather Analysis',
-                        description: 'Favorable conditions for next 6 hours',
-                        confidence: 90,
-                        priority: 'medium' as const,
-                        timestamp: new Date().toLocaleString()
-                      }}
+                    <CrewPresence />
+                  </ErrorBoundary>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="navigation" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div className="lg:col-span-3">
+                  <ErrorBoundary>
+                    <MaritimeMap
+                      waypoints={mockWaypoints}
+                      currentPosition={currentPosition}
                     />
                   </ErrorBoundary>
-                  <ErrorBoundary>
-                    <AlertsPanel />
-                  </ErrorBoundary>
                 </div>
-                <div className="mt-6">
+                <div>
                   <ErrorBoundary>
-                    <SystemMonitor />
+                    <NavigationControls />
                   </ErrorBoundary>
                 </div>
               </div>
-              <div>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <ErrorBoundary>
-                  <CrewPresence />
+                  <AdvancedMetrics />
+                </ErrorBoundary>
+                <ErrorBoundary>
+                  <AnalyticsAndInsights />
                 </ErrorBoundary>
               </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="navigation" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-              <div className="lg:col-span-3">
+            <TabsContent value="realtime" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <ErrorBoundary>
-                <MaritimeMap 
-                  waypoints={mockWaypoints} 
-                  currentPosition={{ lat: -23.5505, lng: -46.6333 }}
-                />
+                  <PerformanceMonitor />
+                </ErrorBoundary>
+                <ErrorBoundary>
+                  <SystemMonitor />
                 </ErrorBoundary>
               </div>
-              <div>
-                <ErrorBoundary>
-                  <NavigationControls />
-                </ErrorBoundary>
-              </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="analytics" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <TabsContent value="reports" className="space-y-6">
               <ErrorBoundary>
-                <AdvancedMetrics />
+                <ReportsSystem />
               </ErrorBoundary>
+            </TabsContent>
+
+            <TabsContent value="testing" className="space-y-6">
               <ErrorBoundary>
-                <AnalyticsAndInsights />
+                <SystemTests />
               </ErrorBoundary>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="realtime" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <TabsContent value="settings" className="space-y-6">
               <ErrorBoundary>
-                <PerformanceMonitor />
+                <MaritimeSettings />
               </ErrorBoundary>
+            </TabsContent>
+
+            <TabsContent value="profile" className="space-y-6">
               <ErrorBoundary>
-                <SystemMonitor />
+                <ProfileGamified />
               </ErrorBoundary>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="reports" className="space-y-6">
-            <ErrorBoundary>
-              <ReportsSystem />
-            </ErrorBoundary>
-          </TabsContent>
-
-          <TabsContent value="testing" className="space-y-6">
-            <ErrorBoundary>
-              <SystemTests />
-            </ErrorBoundary>
-          </TabsContent>
-
-          <TabsContent value="settings" className="space-y-6">
-            <ErrorBoundary>
-              <MaritimeSettings />
-            </ErrorBoundary>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </ErrorLogger>

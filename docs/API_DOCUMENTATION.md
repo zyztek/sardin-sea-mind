@@ -4,7 +4,7 @@
 
 ---
 
-# 🔌 APIs EXTERNAS INTEGRADAS
+## 🔌 APIs EXTERNAS INTEGRADAS
 
 ## 1. Open-Meteo API
 
@@ -128,7 +128,7 @@ GET /griddap/erdMH1chla8day.json
 
 ---
 
-# 🔧 APIs INTERNAS (SARDIN-AI)
+## 🔧 APIs INTERNAS (SARDIN-AI)
 
 ## OpenMeteoService
 
@@ -243,7 +243,7 @@ hotspots.forEach(spot => {
 
 ---
 
-# 🤖 API DE AGENTES
+## 🤖 API DE AGENTES
 
 ## AgentOrchestrator
 
@@ -282,7 +282,7 @@ orchestrator.stopAll();
 
 ---
 
-# 🪝 HOOKS DISPONIBLES
+## 🪝 HOOKS DISPONIBLES
 
 ## useWeatherData
 
@@ -336,7 +336,7 @@ function MyComponent() {
 
 ---
 
-# 📡 POCKETBASE API
+## 📡 POCKETBASE API
 
 ## Autenticación
 
@@ -382,7 +382,7 @@ vesselService.subscribe((event) => {
 
 ---
 
-# 🔐 LÍMITES Y RATE LIMITING
+## 🔐 LÍMITES Y RATE LIMITING
 
 | API | Límite | Caché |
 |-----|--------|-------|

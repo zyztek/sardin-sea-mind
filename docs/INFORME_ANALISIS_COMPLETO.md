@@ -8,7 +8,7 @@
 
 ---
 
-# 📈 ESTADÍSTICAS DEL PROYECTO
+## 📈 ESTADÍSTICAS DEL PROYECTO
 
 ## Código Fuente
 
@@ -53,11 +53,11 @@
 
 ---
 
-# 🧪 RESULTADOS DE PRUEBAS
+## 🧪 RESULTADOS DE PRUEBAS
 
 ## Tests Automatizados (Vitest)
 
-```
+```text
 ✓ src/__tests__/services/OpenMeteoService.test.ts (6 tests) 40ms
 ✓ src/__tests__/services/NOAAService.test.ts (7 tests) 37ms
 ✓ src/__tests__/agents/AgentSystem.test.ts (11 tests) 79ms
@@ -75,7 +75,7 @@ Duration:    10.91s
 
 ## Build de Producción
 
-```
+```text
 ✓ 1772 modules transformed
 ✓ built in 30.12s
 Exit code: 0
@@ -83,7 +83,7 @@ Exit code: 0
 
 ---
 
-# 🏆 ANÁLISIS COMPARATIVO
+## 🏆 ANÁLISIS COMPARATIVO
 
 ## SARDIN-AI vs Competidores Globales
 
@@ -112,7 +112,7 @@ Exit code: 0
 
 ---
 
-# 🌟 ¿QUÉ HACE ÚNICO A SARDIN-AI?
+## 🌟 ¿QUÉ HACE ÚNICO A SARDIN-AI?
 
 ## 1. Único Sistema Multi-Agente Open Source del Mundo
 
@@ -126,7 +126,7 @@ Exit code: 0
 
 ## 2. Combinación Única de Características
 
-```
+```text
 SARDIN-AI = Open Source
           + Multi-Agente (7 agentes)
           + Offline-First
@@ -135,7 +135,7 @@ SARDIN-AI = Open Source
           + PWA
           + Documentación Completa
           + Testing Automatizado
-```
+```text
 
 **Esta combinación NO EXISTE en ningún otro proyecto.**
 
@@ -154,7 +154,7 @@ SARDIN-AI = Open Source
 
 ---
 
-# 📊 COMPARATIVA NUMÉRICA
+## 📊 COMPARATIVA NUMÉRICA
 
 ## Costo Total de Propiedad (TCO) - 3 años
 
@@ -183,7 +183,7 @@ SARDIN-AI = Open Source
 
 ---
 
-# 🔍 VERIFICACIÓN DE UNICIDAD
+## 🔍 VERIFICACIÓN DE UNICIDAD
 
 ## Búsquedas Realizadas
 
@@ -211,7 +211,7 @@ SARDIN-AI = Open Source
 
 ---
 
-# 📋 RESUMEN EJECUTIVO
+## 📋 RESUMEN EJECUTIVO
 
 ## Por Qué Elegir SARDIN-AI
 
@@ -242,7 +242,7 @@ SARDIN-AI = Open Source
 
 ---
 
-# ✅ VERIFICACIÓN COMPLETA
+## ✅ VERIFICACIÓN COMPLETA
 
 | Check | Estado |
 |-------|--------|

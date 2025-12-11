@@ -4,7 +4,7 @@
 
 ---
 
-# 📸 IMÁGENES GENERADAS
+## 📸 IMÁGENES GENERADAS
 
 ## Mockups y Visualizaciones
 
@@ -34,7 +34,7 @@
 
 ---
 
-# 🎨 ASSETS PENDIENTES
+## 🎨 ASSETS PENDIENTES
 
 ## Por Generar (cuando cuota se restablezca)
 
@@ -57,11 +57,11 @@
 
 ---
 
-# 📁 ESTRUCTURA DE ARCHIVOS
+## 📁 ESTRUCTURA DE ARCHIVOS
 
 ## Ubicación de Assets en el Proyecto
 
-```
+```text
 sardin-sea-mind/
 ├── public/
 │   ├── pwa-192x192.png      # Ícono PWA pequeño
@@ -84,7 +84,7 @@ sardin-sea-mind/
 
 ---
 
-# 🎥 ASSETS DE VIDEO
+## 🎥 ASSETS DE VIDEO
 
 ## Para el Documental
 
@@ -118,7 +118,7 @@ sardin-sea-mind/
 
 ---
 
-# 📐 GUÍA DE ESTILO VISUAL
+## 📐 GUÍA DE ESTILO VISUAL
 
 ## Paleta de Colores SARDIN-AI
 
@@ -173,7 +173,7 @@ sardin-sea-mind/
 
 ---
 
-# 🔗 ENLACES RÁPIDOS
+## 🔗 ENLACES RÁPIDOS
 
 ## Bancos de Recursos
 

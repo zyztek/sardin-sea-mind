@@ -1,0 +1,22 @@
+title: Welcome to the Community
+labels: [welcome]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 👋 Welcome to the SARDIN-AI Community!
+
+        We are thrilled to have you here. This discussion board is the place to:
+
+        *   Introduce yourself.
+        *   Ask general questions about the project.
+        *   Share ideas that aren't quite ready for a Feature Request.
+        *   Show off what you've built with SARDIN-AI.
+
+        Please be respectful and follow our [Code of Conduct](../CODE_OF_CONDUCT.md).
+
+  - type: textarea
+    id: intro
+    attributes:
+      label: Introduce Yourself
+      placeholder: "Hi! I'm a developer from..."

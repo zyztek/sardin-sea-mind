@@ -4,7 +4,7 @@
 
 ---
 
-# 📊 RESUMEN EJECUTIVO
+## 📊 RESUMEN EJECUTIVO
 
 **SARDIN-AI** es un sistema de inteligencia artificial para operaciones marítimas que revoluciona la navegación, predicción pesquera y gestión de flotas mediante algoritmos de machine learning y arquitectura moderna de software.
 
@@ -21,7 +21,7 @@
 
 ---
 
-# 🏗️ ARQUITECTURA TÉCNICA
+## 🏗️ ARQUITECTURA TÉCNICA
 
 ## Stack Tecnológico
 
@@ -136,7 +136,7 @@ system_alerts (
 
 ---
 
-# 📈 ANÁLISIS DE RENDIMIENTO
+## 📈 ANÁLISIS DE RENDIMIENTO
 
 ## Benchmarks del Sistema
 
@@ -170,7 +170,7 @@ system_alerts (
 
 ---
 
-# 🤖 SISTEMA DE AGENTES IA
+## 🤖 SISTEMA DE AGENTES IA
 
 ## Arquitectura Multi-Agente
 
@@ -281,7 +281,7 @@ interface WeatherAgent {
 
 ---
 
-# 💰 ANÁLISIS DE COSTOS
+## 💰 ANÁLISIS DE COSTOS
 
 ## Comparativa de Infraestructura
 
@@ -317,7 +317,7 @@ Total:                            ~€5/mes (~$5.50 USD)
 
 ---
 
-# 🛠️ APIS Y RECURSOS GRATUITOS
+## 🛠️ APIS Y RECURSOS GRATUITOS
 
 ## APIs Integradas/Recomendadas
 
@@ -357,7 +357,7 @@ Total:                            ~€5/mes (~$5.50 USD)
 
 ---
 
-# 📊 ESTADÍSTICAS DEL PROYECTO
+## 📊 ESTADÍSTICAS DEL PROYECTO
 
 ## Métricas de Código
 
@@ -392,7 +392,7 @@ Documentación:            15 archivos
 
 ---
 
-# 🎯 ROADMAP TÉCNICO
+## 🎯 ROADMAP TÉCNICO
 
 ## Q1 2025 (Actual)
 

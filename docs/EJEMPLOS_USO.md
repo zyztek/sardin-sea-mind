@@ -4,7 +4,7 @@
 
 ---
 
-# 🎣 Ejemplo 1: Obtener Predicción de Pesca
+## 🎣 Ejemplo 1: Obtener Predicción de Pesca
 
 ```typescript
 import { useFishingPrediction } from '@/hooks/useOceanData';
@@ -31,7 +31,7 @@ function FishingScreen() {
 
 ---
 
-# 🌤️ Ejemplo 2: Monitorear Clima en Tiempo Real
+## 🌤️ Ejemplo 2: Monitorear Clima en Tiempo Real
 
 ```typescript
 import { useCurrentWeather } from '@/hooks/useWeatherData';
@@ -84,7 +84,7 @@ function WeatherMonitor() {
 
 ---
 
-# 🤖 Ejemplo 3: Usar el Sistema de Agentes
+## 🤖 Ejemplo 3: Usar el Sistema de Agentes
 
 ```typescript
 import { useAgents } from '@/hooks/useAgents';
@@ -134,7 +134,7 @@ function AgentControlPanel() {
 
 ---
 
-# 📍 Ejemplo 4: Crear y Gestionar Waypoints
+## 📍 Ejemplo 4: Crear y Gestionar Waypoints
 
 ```typescript
 import { useMaritimeDatabase } from '@/hooks/useMaritimeDatabase';

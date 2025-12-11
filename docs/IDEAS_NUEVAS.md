@@ -11,32 +11,32 @@ Cada idea incluye su diseño completo y plan de implementación.
 
 1. [Sistema Multi-Agente IA](#1-sistema-multi-agente-ia)
 2. [Integraciones de APIs Gratuitas](#2-integraciones-de-apis-gratuitas)
-3. [Base de Recursos Automatizada](#11-base-de-recursos-automatizada) 🆕
+3. [Base de Recursos Automatizada](#3-base-de-recursos-automatizada) 🆕
 
 ### EN PROGRESO 🔄
 
-4. [Video Documental Profesional](#12-video-documental-profesional) 🆕
-5. ["Yo Digital" - Avatar y Voz](#13-yo-digital-avatar-y-voz) 🆕
-6. [Generador de Presentaciones](#3-generador-de-presentaciones)
+4. [Video Documental Profesional](#4-video-documental-profesional) 🆕
+5. ["Yo Digital" - Avatar y Voz](#5-yo-digital-avatar-y-voz) 🆕
+6. [Generador de Presentaciones](#6-generador-de-presentaciones)
 
 ### PLANIFICADAS 📝
 
-7. [Dashboard de Métricas Avanzado](#4-dashboard-de-métricas-avanzado)
-8. [Marketplace de Datos Marítimos](#5-marketplace-de-datos-marítimos)
-9. [App Móvil React Native](#6-app-móvil-react-native)
-10. [Hardware IoT para Sensores](#7-hardware-iot-para-sensores)
-11. [Sistema de Gamificación](#8-sistema-de-gamificación)
-12. [Blockchain para Trazabilidad](#9-blockchain-para-trazabilidad)
-13. [Asistente de Voz Marítimo](#10-asistente-de-voz-marítimo)
+7. [Dashboard de Métricas Avanzado](#7-dashboard-de-métricas-avanzado)
+8. [Marketplace de Datos Marítimos](#8-marketplace-de-datos-marítimos)
+9. [App Móvil React Native](#9-app-móvil-react-native)
+10. [Hardware IoT para Sensores](#10-hardware-iot-para-sensores)
+11. [Sistema de Gamificación](#11-sistema-de-gamificación)
+12. [Blockchain para Trazabilidad](#12-blockchain-para-trazabilidad)
+13. [Asistente de Voz Marítimo](#13-asistente-de-voz-marítimo)
 14. [Alianzas Gubernamentales](#14-alianzas-gubernamentales) 🆕
 
 ---
 
 ## 1. SISTEMA MULTI-AGENTE IA
 
-### Estado: ✅ IMPLEMENTADO
+**Estado:** ✅ IMPLEMENTADO
 
-### Descripción
+**Descripción:**
 
 Sistema de agentes autónomos especializados que trabajan en paralelo, cada uno enfocado en un dominio específico.
 
@@ -69,7 +69,7 @@ Sistema de agentes autónomos especializados que trabajan en paralelo, cada uno 
 
 ### Estado: 🔄 EN DISEÑO
 
-### Descripción
+**Descripción:**
 
 Integrar múltiples APIs gratuitas para enriquecer los datos del sistema.
 
@@ -114,7 +114,7 @@ interface APIService {
 }
 ```
 
-### Archivos a Crear
+**Archivos a Crear:**
 
 - `src/services/apis/OpenMeteoService.ts`
 - `src/services/apis/NOAAService.ts`
@@ -129,11 +129,11 @@ interface APIService {
 
 ### Estado: 📝 PLANIFICADO
 
-### Descripción
+**Descripción:**
 
 Sistema para generar automáticamente presentaciones profesionales del proyecto.
 
-### Características
+**Características:**
 
 - Plantillas de diapositivas en HTML/CSS
 - Exportación a PDF
@@ -141,7 +141,7 @@ Sistema para generar automáticamente presentaciones profesionales del proyecto.
 - Temas personalizables
 - Preview en tiempo real
 
-### Tecnologías
+**Tecnologías:**
 
 - **Reveal.js** - Framework de presentaciones
 - **html2pdf.js** - Exportación a PDF
@@ -150,7 +150,7 @@ Sistema para generar automáticamente presentaciones profesionales del proyecto.
 
 ### Estructura de Diapositivas
 
-```
+```text
 1. Portada (logo, nombre, tagline)
 2. Problema (dolor del mercado)
 3. Solución (SARDIN-AI)
@@ -163,7 +163,7 @@ Sistema para generar automáticamente presentaciones profesionales del proyecto.
 10. Call to Action
 ```
 
-### Archivos a Crear
+**Archivos a Crear:**
 
 - `src/components/presentation/`
 - `src/hooks/usePresentation.ts`
@@ -175,7 +175,7 @@ Sistema para generar automáticamente presentaciones profesionales del proyecto.
 
 ### Estado: 📝 PLANIFICADO
 
-### Descripción
+**Descripción:**
 
 Panel de métricas en tiempo real con visualizaciones avanzadas.
 
@@ -190,7 +190,7 @@ Panel de métricas en tiempo real con visualizaciones avanzadas.
 7. **Alertas en Tiempo Real** - Feed
 8. **KPIs Financieros** - ROI, costos
 
-### Tecnologías
+**Tecnologías:**
 
 - **Recharts** - Gráficos React
 - **Visx** - Visualizaciones D3
@@ -203,7 +203,7 @@ Panel de métricas en tiempo real con visualizaciones avanzadas.
 
 ### Estado: 💡 IDEA
 
-### Descripción
+**Descripción:**
 
 Plataforma donde los usuarios pueden compartir y monetizar datos marítimos.
 
@@ -234,11 +234,11 @@ Plataforma donde los usuarios pueden compartir y monetizar datos marítimos.
 
 ### Estado: 💡 IDEA
 
-### Descripción
+**Descripción:**
 
 Aplicación móvil nativa para iOS y Android.
 
-### Características
+**Características:**
 
 - PWA existente como base
 - Notificaciones push nativas
@@ -259,7 +259,7 @@ Aplicación móvil nativa para iOS y Android.
 
 ### Estado: 💡 IDEA
 
-### Descripción
+**Descripción:**
 
 Dispositivos físicos para captura de datos en tiempo real.
 
@@ -283,7 +283,7 @@ Dispositivos físicos para captura de datos en tiempo real.
 
 ### Estado: 💡 IDEA
 
-### Descripción
+**Descripción:**
 
 Elementos de juego para mejorar engagement de usuarios.
 
@@ -300,7 +300,7 @@ Elementos de juego para mejorar engagement de usuarios.
 
 ### Estado: 💡 IDEA
 
-### Descripción
+**Descripción:**
 
 Registro inmutable de capturas para certificación.
 
@@ -317,7 +317,7 @@ Registro inmutable de capturas para certificación.
 
 ### Estado: 💡 IDEA
 
-### Descripción
+**Descripción:**
 
 Asistente de voz especializado para operaciones marítimas.
 
@@ -328,7 +328,7 @@ Asistente de voz especializado para operaciones marítimas.
 - "Estado de sensores"
 - "Enviar alerta a flota"
 
-### Tecnologías
+**Tecnologías:**
 
 - Web Speech API
 - Whisper (OpenAI)

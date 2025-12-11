@@ -4,7 +4,7 @@
 
 ---
 
-# 📋 ÍNDICE
+## 📋 ÍNDICE
 
 ## Preguntas Generales (1-10)
 
@@ -42,7 +42,7 @@
 
 ---
 
-# 📖 RESPUESTAS DETALLADAS
+## 📖 RESPUESTAS DETALLADAS
 
 ## PREGUNTAS GENERALES
 

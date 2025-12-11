@@ -10,7 +10,7 @@
 
 ---
 
-# 🎮 BRAINSTORM 1: Gamificación Marina
+## 🎮 BRAINSTORM 1: Gamificación Marina
 
 ## Concepto
 
@@ -30,13 +30,13 @@ Convertir las operaciones de pesca en un juego con logros, niveles y recompensas
 
 ### Sistema de Niveles
 
-```
+```text
 Nivel 1: Marinero Novato (0-500 pts)
 Nivel 2: Pescador Competente (500-1500 pts)
 Nivel 3: Capitán Experto (1500-5000 pts)
 Nivel 4: Maestro del Mar (5000-15000 pts)
 Nivel 5: Leyenda Oceánica (15000+ pts)
-```
+```text
 
 ### Leaderboards
 
@@ -63,7 +63,7 @@ Nivel 5: Leyenda Oceánica (15000+ pts)
 
 ---
 
-# 🤖 BRAINSTORM 2: IA Predictiva Avanzada con ML Real
+## 🤖 BRAINSTORM 2: IA Predictiva Avanzada con ML Real
 
 ## Concepto
 
@@ -131,7 +131,7 @@ Output: [anomaly_score, type, recommendation]
 
 ---
 
-# 👥 BRAINSTORM 3: Red Social de Pescadores
+## 👥 BRAINSTORM 3: Red Social de Pescadores
 
 ## Concepto
 
@@ -184,7 +184,7 @@ Crear una comunidad donde pescadores compartan información, consejos y experien
 
 ---
 
-# 🔌 BRAINSTORM 4: Hardware IoT Económico
+## 🔌 BRAINSTORM 4: Hardware IoT Económico
 
 ## Concepto
 
@@ -216,7 +216,8 @@ Kit de sensores de bajo costo para embarcaciones que alimentan SARDIN-AI.
 
 ### Versión Enterprise (~$300)
 
-+ Conexión NMEA 2000
+- Conexión NMEA 2000
+
 - Satélite Iridium (módulo)
 - Múltiples sensores de motor
 - Cámara IP
@@ -247,7 +248,7 @@ Embarcación → [WiFi/LoRa] → Gateway → [Internet] → SARDIN-AI
 
 ---
 
-# 🔗 BRAINSTORM 5: Blockchain para Trazabilidad
+## 🔗 BRAINSTORM 5: Blockchain para Trazabilidad
 
 ## Concepto
 
@@ -316,7 +317,7 @@ Ve origen verificado
 
 ---
 
-# 📋 RESUMEN DE PRIORIDADES
+## 📋 RESUMEN DE PRIORIDADES
 
 | Brainstorm | Impacto | Esfuerzo | Prioridad |
 |------------|---------|----------|-----------|

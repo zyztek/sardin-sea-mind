@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Ship, Brain, Wifi, WifiOff, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { LevelBadge } from '@/components/gamification/LevelBadge';
 
 interface MaritimeHeaderProps {
   isConnected: boolean;
@@ -61,6 +62,9 @@ export const MaritimeHeader: React.FC<MaritimeHeaderProps> = ({
                   <div className="font-medium text-foreground">{profile.full_name}</div>
                   <div className="text-xs text-muted-foreground capitalize">{profile.maritime_role}</div>
                 </div>
+                <div className="pl-2 border-l ml-2">
+                  <LevelBadge size="sm" showProgress={false} />
+                </div>
               </div>
             )}
 
@@ -89,9 +93,9 @@ export const MaritimeHeader: React.FC<MaritimeHeaderProps> = ({
               </Badge>
             </div>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleSignOut}
               className="ml-2"
             >
